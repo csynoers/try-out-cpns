@@ -1,5 +1,5 @@
-# ujian-online-smpn1-sedayu
-Ujian Online SMP  Negeri 1 Sedayu
+# Sistem Try Out CAT
+Sistem Try Out CAT (Computer Assisted Test) CPNS
 
 # Login
     - Admin         (   username= "admin" password="admin" )
@@ -13,7 +13,7 @@ Ujian Online SMP  Negeri 1 Sedayu
 - download zip
 - extract zip and move or copy to your xampp directory
 - create new database on your phpmyadmin or sqlYog  with name "prio_ta"
-- Importt database, sql file : "{project_path}/sql_dump/prio_ta.sql"
+- Importt database, sql file : "{project_path}/sql_dump/bimbelic_tryout.sql"
 
 # SS Login Page:
 ![alt text](https://raw.githubusercontent.com/csynoers/ujian-online-smpn1-sedayu/master/login-page.png)
