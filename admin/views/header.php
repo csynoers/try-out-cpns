@@ -2,10 +2,9 @@
 <!DOCTYPE html>
 <html>
 
-<!-- Mirrored from adminlte.io/themes/dev/AdminLTE/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 22 Apr 2019 02:45:18 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
 <head>
-  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <!-- <meta charset="utf-8"> -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Admin</title>
   <!-- Tell the browser to be responsive to screen width -->

@@ -75,30 +75,15 @@
               </p>
             </a>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'soal') ? 'menu-open' : null ; ?>">
-            <a href="#" class="nav-link">
+          <li class="nav-item ">
+            <a href="<?php echo base_url('soal/index') ?>" class="nav-link <?php echo ($this->uri->segment(1)=='soal') ? 'active' : null ; ?>">
               <i class="nav-icon fa fa-clipboard"></i>
               <p>
                 Soal
-                <i class="right fa fa-angle-left"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item" >
-                <a href="<?php echo base_url('soal/index') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'index') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Daftar Soal</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="javascript:void(0)" data-title="Tambah soal baru" data-href="<?php echo base_url('soal/add') ?>" class="nav-link form-add <?php echo ($this->uri->segment(2) == 'data-pelajaran') ? 'active' : null ; ?>">
-                  <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Tambah Soal</p>
-                </a>
-              </li>
-            </ul>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'soal') ? 'menu-open' : null ; ?>">
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'siswa') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-clipboard"></i>
               <p>
@@ -121,7 +106,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'soal') ? 'menu-open' : null ; ?>">
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'hasil-penilaian') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-clipboard"></i>
               <p>
@@ -144,7 +129,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'soal') ? 'menu-open' : null ; ?>">
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'konfigurasi-ujian') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-clipboard"></i>
               <p>

@@ -184,6 +184,23 @@ function countDownUjian()
       /*==================== load Modal  ====================*/
       $( '#myModal' ).modal( 'show' );
 
+      $( document ).on('change', '#optionsKategoriSoal',function(){
+        let countOfChoice = $( this ).find(':selected').data('count-of-choice');
+        let htmls = [];
+        let jawaban = ['A','B','C','D','E'];
+        for (let index = 0; index < countOfChoice; index++) {
+            htmls.push(`
+              <div class='form-group'>
+                <label>Jawaban ${jawaban[index]}:</label>
+                <textarea name='question' class='form-control mytextarea'></textarea>
+              </div>
+            `);
+        }
+        htmls = htmls.join('');
+        $('#fieldChoices').html(htmls)
+        loadTinymce();
+      });
+
     },'html');
   });
   /* ==================== END : LOAD FORM ADD DATA ==================== */

@@ -1,7 +1,3 @@
-  <!-- DataTables -->
-  <link rel="stylesheet" href="<?php echo base_url()?>../themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/datatables/dataTables.bootstrap4.css">
-
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -48,11 +44,7 @@
                   foreach ($rows as $key => $value) {
                     $value->no          = ($key+1);
                     $value->href_edit   = base_url('admin/soal/edit'.$value->question_categori_id);
-                    $value->href_delete = base_url('admin/soal/delete'.$value->question_categori_id);
-
-                    echo '<pre>'; 
-                    echo json_encode($value,JSON_PRETTY_PRINT);
-                    echo '</pre>'; 
+                    $value->href_delete = base_url('admin/soal/delete'.$value->question_categori_id); 
                     
                     echo "
                       <tr>

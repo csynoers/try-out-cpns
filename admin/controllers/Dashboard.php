@@ -20,8 +20,7 @@ class Dashboard extends MY_Controller {
 	 */
 	public function index()
 	{
-        $this->view = 'dashboard';
-        $this->render_pages();
+        $this->render_pages( 'dashboard' );
         
 	}
 }

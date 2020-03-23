@@ -51,21 +51,17 @@ class Kategori extends MY_Controller {
             
             default:
                 # code...
-                $rows = $this->M_question_categories->get_question_categories();
-                $this->content = [
-                    'rows' => $rows
-                ];
-                $this->view = 'question_categories';
-                $this->render_pages();
+                $data['rows'] = $this->M_question_categories->get_question_categories();
+                $this->render_pages( 'question_categories', $data );
                 break;
         }
         
 	}
 	public function soal_add()
 	{
-		$this->data['data_action']  = base_url() .'kategori/soal/store';
-		$this->html= "
-			<form action='javascript:void(0)' data-action='{$this->data['data_action']}' role='form' method='post' enctype='multipart/form-data'>
+		$data['data_action']  = base_url() .'kategori/soal/store';
+		$html= "
+			<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' method='post' enctype='multipart/form-data'>
 				<div class='form-group'>
 					<label>Nama kategori soal</label>
 					<input type='text' name='title' class='form-control' placeholder='Ketikan nama kategori soal disini ...' required=''>
@@ -73,19 +69,16 @@ class Kategori extends MY_Controller {
 				<button type='submit' class='btn btn-primary'>Publish</button>
 			</form>
         ";
-		echo $this->html;
-
-		/* for debug only : uncomment text below */
-		$this->debugs();
+		echo $html;
 	}
 	/* ==================== START : FORM EDIT KATEGORI SOAL url{kategori/soal/edit/id} ==================== */
 	public function soal_edit()
 	{
-		$this->data['rows']			= $this->M_question_categories->get_question_categories( $this->uri->segment(4) );
-		foreach ($this->data['rows'] as $key => $value) {		
-			$this->data['data_action']  = base_url().'kategori/soal/store/'.$this->uri->segment(4);		
-			$this->html= "
-				<form action='javascript:void(0)' data-action='{$this->data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
+		$data['rows']			= $this->M_question_categories->get_question_categories( $this->uri->segment(4) );
+		foreach ($data['rows'] as $key => $value) {		
+			$data['data_action']  = base_url().'kategori/soal/store/'.$this->uri->segment(4);		
+			$html= "
+				<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
 					<div class='form-group'>
 						<label>Title</label>
 						<input value='{$value->title}' type='text' name='title' class='form-control' placeholder='Type the title page here ...' required=''>
@@ -94,10 +87,7 @@ class Kategori extends MY_Controller {
 				</form>
 			";
 		}
-		echo $this->html;
-
-		/* for debug only : uncomment text below */
-		$this->debugs();
+		echo $html;
 	}
 	/* ==================== END : FORM EDIT KATEGORI SOAL ==================== */
 

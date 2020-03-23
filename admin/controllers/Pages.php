@@ -26,12 +26,8 @@ class Pages extends MY_Controller {
 	/* ==================== START : DEFAULT PAGE url{pages/index}==================== */
 	public function index()
 	{
-		$rows = $this->M_pages->get_pages();
-		$this->content = [
-			'rows' => $rows
-		];
-        $this->view = 'pages';
-        $this->render_pages();
+		$data['rows'] = $this->M_pages->get_pages();
+		$this->render_pages( 'pages', $data );
         
 	}
 	/* ==================== END : DEFAULT PAGE ==================== */
@@ -39,11 +35,11 @@ class Pages extends MY_Controller {
 	/* ==================== START : FORM ADD PAGES url{pages/add}==================== */
 	public function add()
 	{
-		$this->data['action']   	= base_url();		
-		$this->data['data_action']  = base_url() .'pages/store';		
-		$this->data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
-		$this->html= "
-			<form action='javascript:void(0)' data-action='{$this->data['data_action']}' role='form' method='post' enctype='multipart/form-data'>
+		$data['action']   		= base_url();		
+		$data['data_action']  	= base_url() .'pages/store';		
+		$data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
+		$html= "
+			<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' method='post' enctype='multipart/form-data'>
 				<div class='form-group'>
 					<label>Title</label>
 					<input type='text' name='title' class='form-control' placeholder='Type the title page here ...' required=''>
@@ -55,7 +51,7 @@ class Pages extends MY_Controller {
 							<span class='input-group-text'><i class='fa fa-link'></i></span>
 						</div>
 						<div class='input-group-prepend'>
-							<span class='input-group-text'>{$this->data['slug']}</span>
+							<span class='input-group-text'>{$data['slug']}</span>
 						</div>
 						<input type='text' name='slug' class='form-control' placeholder='ex: title-page' required=''>
 					</div>
@@ -67,23 +63,20 @@ class Pages extends MY_Controller {
 				<button type='submit' class='btn btn-primary'>Publish</button>
 			</form>
         ";
-		echo $this->html;
-
-		/* for debug only : uncomment text below */
-		$this->debugs();
+		echo $html;
 	}
 	/* ==================== END : FORM ADD PAGES ==================== */
 
 	/* ==================== START : FORM EDIT PAGES url{pages/edit}==================== */
 	public function edit()
 	{
-		$this->data['rows']			= $this->M_pages->get_pages( $this->uri->segment(3) );
-		foreach ($this->data['rows'] as $key => $value) {
-			$this->data['action']   	= base_url();		
-			$this->data['data_action']  = base_url().'pages/store/'.$this->uri->segment(3);		
-			$this->data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
-			$this->html= "
-				<form action='javascript:void(0)' data-action='{$this->data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
+		$data['rows']			= $this->M_pages->get_pages( $this->uri->segment(3) );
+		foreach ($data['rows'] as $key => $value) {
+			$data['action']   		= base_url();		
+			$data['data_action']  	= base_url().'pages/store/'.$this->uri->segment(3);		
+			$data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
+			$html= "
+				<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
 					<div class='form-group'>
 						<label>Title</label>
 						<input value='{$value->title}' type='text' name='title' class='form-control' placeholder='Type the title page here ...' required=''>
@@ -95,7 +88,7 @@ class Pages extends MY_Controller {
 								<span class='input-group-text'><i class='fa fa-link'></i></span>
 							</div>
 							<div class='input-group-prepend'>
-								<span class='input-group-text'>{$this->data['slug']}</span>
+								<span class='input-group-text'>{$data['slug']}</span>
 							</div>
 							<input value='{$value->slug}' type='text' name='slug' class='form-control' placeholder='ex: title-page' required=''>
 						</div>
@@ -108,10 +101,7 @@ class Pages extends MY_Controller {
 				</form>
 			";
 		}
-		echo $this->html;
-
-		/* for debug only : uncomment text below */
-		$this->debugs();
+		echo $html;
 	}
 	/* ==================== END : FORM EDIT PAGES ==================== */
 

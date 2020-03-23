@@ -1,22 +1,35 @@
 <?php
 class MY_Controller extends CI_Controller{
 	function __construct(){
-		parent::__construct();
+        parent::__construct();
     }
-    function render_pages()
+    function render_pages( $view='welcome_message', $data=[], $stats=FALSE )
     {
-        $this->load->view('header');
-        $this->load->view('nav');
-        $this->load->view($this->view, (empty($this->content)? [] : $this->content ) );
-        $this->load->view('footer');
+        if ( ! empty( $this->input->get('debugs') ) ) {
+            /* for debug only : uncomment text below */
+            $this->debugs( $data );
+        } else {
+            $this->load->view('header');
+            $this->load->view('nav');
+            $this->load->view( $view, $data, $stats );
+            $this->load->view('footer');
+        }
+        
+
     }
 
     /* ==================== START : FOR DEBUG ONLY ==================== */
-	public function debugs()
+	public function debugs( $data )
 	{
-		echo '<pre>';
-		echo strip_tags(json_encode($this->data,JSON_PRETTY_PRINT));
-		echo '</pre>';
+        if ( ENVIRONMENT=='development' ) { # debug works
+            echo '
+                <pre>
+                    '.strip_tags(json_encode($data,JSON_PRETTY_PRINT)).'
+                </pre>
+                
+            ';
+        }
+                
 	}
 	/* ==================== END : FOR DEBUG ONLY ==================== */
 }

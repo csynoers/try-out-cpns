@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2020 at 03:48 AM
+-- Generation Time: Mar 23, 2020 at 10:00 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -31,15 +31,16 @@ SET time_zone = "+00:00";
 CREATE TABLE `choices` (
   `choice_id` int(11) NOT NULL,
   `question_id` int(11) NOT NULL DEFAULT '0',
-  `weight` int(11) NOT NULL DEFAULT '0'
+  `weight` int(11) NOT NULL DEFAULT '0',
+  `choice` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `choices`
 --
 
-INSERT INTO `choices` (`choice_id`, `question_id`, `weight`) VALUES
-(1, 1, 0);
+INSERT INTO `choices` (`choice_id`, `question_id`, `weight`, `choice`) VALUES
+(1, 1, 0, '');
 
 -- --------------------------------------------------------
 
@@ -76,7 +77,7 @@ INSERT INTO `pages` (`id`, `sorting`, `title`, `slug`, `description`, `block`, `
 CREATE TABLE `questions` (
   `question_id` int(11) NOT NULL,
   `question_categori_id` int(11) NOT NULL,
-  `question` text NOT NULL,
+  `question` text,
   `block` enum('0','1') NOT NULL DEFAULT '0',
   `create_at` datetime NOT NULL,
   `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -98,6 +99,7 @@ INSERT INTO `questions` (`question_id`, `question_categori_id`, `question`, `blo
 CREATE TABLE `question_categories` (
   `question_categori_id` int(11) NOT NULL,
   `title` tinytext NOT NULL,
+  `count_of_choices` int(11) DEFAULT '5',
   `block` enum('0','1') NOT NULL DEFAULT '0',
   `create_at` datetime NOT NULL,
   `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -107,10 +109,10 @@ CREATE TABLE `question_categories` (
 -- Dumping data for table `question_categories`
 --
 
-INSERT INTO `question_categories` (`question_categori_id`, `title`, `block`, `create_at`, `update_at`) VALUES
-(1, 'Tes Intelegensi Umum (TIU)', '0', '2020-03-04 00:00:00', '2020-03-09 09:12:30'),
-(2, 'Tes Wawasan Kebangsaan (TWK)', '0', '2020-03-09 16:02:59', '2020-03-09 09:02:59'),
-(3, 'Tes Karakteristik Pribadi (TKP)', '0', '2020-03-09 16:03:30', '2020-03-09 09:03:30');
+INSERT INTO `question_categories` (`question_categori_id`, `title`, `count_of_choices`, `block`, `create_at`, `update_at`) VALUES
+(1, 'Tes Intelegensi Umum (TIU)', 5, '0', '2020-03-04 00:00:00', '2020-03-23 07:07:58'),
+(2, 'Tes Wawasan Kebangsaan (TWK)', 5, '0', '2020-03-09 16:02:59', '2020-03-23 07:08:01'),
+(3, 'Tes Karakteristik Pribadi (TKP)', 5, '0', '2020-03-09 16:03:30', '2020-03-23 07:08:03');
 
 -- --------------------------------------------------------
 

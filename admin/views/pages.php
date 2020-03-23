@@ -44,10 +44,6 @@
                     $value->no          = ($key+1);
                     $value->href_edit   = base_url('pages/edit/'.$value->id);
                     $value->href_delete = base_url('admin/data-guru-delete/'.$value->id);
-
-                    echo '<pre>'; 
-                    echo json_encode($value,JSON_PRETTY_PRINT);
-                    echo '</pre>'; 
                     
                     echo "
                       <tr>
