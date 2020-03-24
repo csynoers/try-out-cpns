@@ -64,7 +64,7 @@ class Soal extends MY_Controller {
 	{
 		$data[] = "<option value='' selected disabled> -- Pilih kategori soal -- </option>"; 
 		foreach ($this->M_question_categories->get_question_categories() as $key => $value) {
-			$data[] = "<option value='{$value->question_categori_id}' data-count-of-choice='{$value->count_of_choices}'>{$value->title}</option>";
+			$data[] = "<option value='{$value->question_categori_id}' data-count-of-choice='{$value->count_of_choices}' data-true-question='{$value->true_question}'>{$value->title}</option>";
 		}
 		$data = implode('',$data);
 		$data = "

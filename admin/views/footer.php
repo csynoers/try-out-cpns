@@ -186,18 +186,65 @@ function countDownUjian()
 
       $( document ).on('change', '#optionsKategoriSoal',function(){
         let countOfChoice = $( this ).find(':selected').data('count-of-choice');
+        let trueQuestion  = $( this ).find(':selected').data('true-question');
         let htmls = [];
         let jawaban = ['A','B','C','D','E'];
-        for (let index = 0; index < countOfChoice; index++) {
+        /*
+        * jika jawaban benar sama maka default nilai untuk jawaban benar ambilkan dari field column table question_categoris is true_grade 
+        * jika trueQuestion='same' maka jangan tampilkan kolom isian penilaian karena jika benar atau salah nilai sudah ditentukan
+        * jika trueQuestion='differebt' maka jangan tampilkan kolom isian penilaian karena setiap jawaban nilai berbeda
+        */
+        if ( trueQuestion=='same' ) {
+          /* loop pilihan A-E */
+          for (let index = 0; index < countOfChoice; index++) {
             htmls.push(`
-              <div class='form-group'>
-                <label>Jawaban ${jawaban[index]}:</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                <label class="form-check-label" for="exampleRadios1">
+                  Jawaban ${jawaban[index]}:
+                </label>
                 <textarea name='question' class='form-control mytextarea'></textarea>
               </div>
+              <hr>
             `);
+          }
+          htmls = htmls.join('');
+          $('#fieldChoices').html(`
+            <hr>
+            <label>Silahkan Masukan Jawaban dan pilih Jawaban Benar</label>
+            ${htmls}
+          `)
+          
+        } else {
+          /* loop pilihan A-E */
+          for (let index = 0; index < countOfChoice; index++) {
+            htmls.push(`
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">
+                      <label class="form-check-label" for="exampleRadios1">
+                        <b>Jawaban ${jawaban[index]}:</b>
+                      </label>
+                    </span>
+                  </div>
+                  <input type="number" class="form-control" placeholder="masukan bobot Jawaban ${jawaban[index]} disini ..." aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <textarea name='question' class='form-control mytextarea'>Masukan isi jawaban ${jawaban[index]} disini...</textarea>
+              </div>
+              <hr>
+            `);
+          }
+          htmls = htmls.join('');
+          $('#fieldChoices').html(`
+            <hr>
+            <label>Silahkan Masukan Nilai Bobot Pada Setiap Jawaban Yang Anda Masukan</label>
+            ${htmls}
+          `)
+          
         }
-        htmls = htmls.join('');
-        $('#fieldChoices').html(htmls)
         loadTinymce();
       });
 
