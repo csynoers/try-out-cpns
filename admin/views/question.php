@@ -43,8 +43,8 @@
                 <?php
                   foreach ($rows as $key => $value) {
                     $value->no          = ($key+1);
-                    $value->href_edit   = base_url('admin/soal/edit'.$value->question_categori_id);
-                    $value->href_delete = base_url('admin/soal/delete'.$value->question_categori_id); 
+                    $value->href_edit   = base_url('soal/edit/'.$value->question_id);
+                    $value->href_delete = base_url('soal/delete'.$value->question_id); 
                     
                     echo "
                       <tr>
@@ -61,7 +61,7 @@
                               <span class='sr-only'>Toggle Dropdown</span>
                             </button>
                             <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                              <a class='dropdown-item edit' href='{$value->href_edit}'>Edit</a>
+                            <a class='dropdown-item form-edit' data-title='Edit soal' data-href='{$value->href_edit}' href='javascript:void(0)'>Edit</a>
                               <a class='dropdown-item delete' href='{$value->href_delete}'>Delete</a>
                             </div>
                           </div>

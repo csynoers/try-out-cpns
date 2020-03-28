@@ -4,35 +4,37 @@
         public $post;
 
         protected $table = 'choices';
+        protected $choice_id;
         protected $question_id;
         protected $question_code;
         protected $weight;
         protected $choice;
 
-        public function get_question()
+        public function get( $id=NULL )
         {
-            $this->db->select("
-                *,
-                DATE_FORMAT(questions.create_at, '%W,  %d %b %Y') AS create_at_mod,
-                IF(questions.block='0','YES','NO') AS block_mod,
-                question_categories.title AS kategori_soal
-            ");
-            $this->db->join('question_categories','questions.question_categori_id=question_categories.question_categori_id','left');
-            return $this->db->get('questions')->result();
+            if ( $id ) {
+                $this->db->where('question_id',$id);
+            }
+            return $this->db->get( $this->table )->result();
         }
 
         public function store()
         {
             if ( $this->uri->segment(3) ) { # update
+                $this->choice_id = $this->post['choice_id'];
+                $this->question_code = $this->post['question_code'];
+                $this->weight = $this->post['weight'];
+                $this->choice = $this->post['choice'];
+
                 $data= [
-                    'title'=> $this->post['title'],
-                    'slug'=> $this->post['slug'],
-                    'description'=> $this->post['description'],
+                    'question_code'=> $this->question_code,
+                    'weight'=> $this->weight,
+                    'choice'=> $this->choice,
                 ];
                 $where= [
-                    'id'=> $this->uri->segment(3)
+                    'choice_id'=> $this->choice_id
                 ];
-                return $this->db->update('pages',$data,$where);
+                return $this->db->update( $this->table,$data,$where);
 
             } else { # insert
                 $this->question_id = $this->post['question_id'];

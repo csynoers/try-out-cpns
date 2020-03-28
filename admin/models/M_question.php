@@ -7,8 +7,11 @@
         protected $block;
         protected $create_at;
 
-        public function get_question()
+        public function get_question( $id=NULL )
         {
+            if ( $id ) {
+                $this->db->where('questions.question_id',$id);
+            }
             $this->db->select("
                 *,
                 DATE_FORMAT(questions.create_at, '%W,  %d %b %Y') AS create_at_mod,
@@ -22,15 +25,17 @@
         public function store()
         {
             if ( $this->uri->segment(3) ) { # update
+                $this->question             = $this->post['question'];
+                $this->block                = '0';
+
                 $data= [
-                    'title'=> $this->post['title'],
-                    'slug'=> $this->post['slug'],
-                    'description'=> $this->post['description'],
+                    'question'=> $this->question,
+                    'block'=> $this->block,
                 ];
                 $where= [
-                    'id'=> $this->uri->segment(3)
+                    'question_id'=> $this->uri->segment(3)
                 ];
-                return $this->db->update('pages',$data,$where);
+                return $this->db->update( $this->table,$data,$where);
 
             } else { # insert
                 $this->question_categori_id = $this->post['question_categori_id'];
