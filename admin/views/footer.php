@@ -199,11 +199,11 @@ function countDownUjian()
           for (let index = 0; index < countOfChoice; index++) {
             htmls.push(`
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                <input class="form-check-input" type="radio" name="choices_option" id="exampleRadios1" value="${jawaban[index]}" required="">
                 <label class="form-check-label" for="exampleRadios1">
                   Jawaban ${jawaban[index]}:
                 </label>
-                <textarea name='question' class='form-control mytextarea'></textarea>
+                <textarea name='choices_answer[${jawaban[index]}]' class='form-control mytextarea'>Masukan isi jawaban ${jawaban[index]} disini...</textarea>
               </div>
               <hr>
             `);
@@ -220,7 +220,7 @@ function countDownUjian()
           for (let index = 0; index < countOfChoice; index++) {
             htmls.push(`
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                <!--<input class="form-check-input" type="radio" name="choices_option" id="exampleRadios1" value="${jawaban[index]}" required="">-->
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">
@@ -229,10 +229,10 @@ function countDownUjian()
                       </label>
                     </span>
                   </div>
-                  <input type="number" class="form-control" placeholder="masukan bobot Jawaban ${jawaban[index]} disini ..." aria-label="Username" aria-describedby="basic-addon1">
+                  <input type="number" name='questions[${jawaban[index]}][weight]' class="form-control" placeholder="masukan bobot Jawaban ${jawaban[index]} disini ..." aria-label="Username" aria-describedby="basic-addon1" required="">
                 </div>
 
-                <textarea name='question' class='form-control mytextarea'>Masukan isi jawaban ${jawaban[index]} disini...</textarea>
+                <textarea name='questions[${jawaban[index]}][choice]' class='form-control mytextarea'>Masukan isi jawaban ${jawaban[index]} disini...</textarea>
               </div>
               <hr>
             `);

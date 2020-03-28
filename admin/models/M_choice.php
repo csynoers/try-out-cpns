@@ -1,11 +1,13 @@
 <?php
-    class M_question extends CI_Model
+    class M_choice extends CI_Model
     {
-        protected $table = 'questions'; 
-        protected $question_categori_id;
-        protected $question;
-        protected $block;
-        protected $create_at;
+        public $post;
+
+        protected $table = 'choices';
+        protected $question_id;
+        protected $question_code;
+        protected $weight;
+        protected $choice;
 
         public function get_question()
         {
@@ -33,21 +35,20 @@
                 return $this->db->update('pages',$data,$where);
 
             } else { # insert
-                $this->question_categori_id = $this->post['question_categori_id'];
-                $this->question             = $this->post['question'];
-                $this->block                = '0';
-                $this->create_at            = date('Y-m-d H:i:s');
+                $this->question_id = $this->post['question_id'];
+                $this->question_code = $this->post['question_code'];
+                $this->weight = $this->post['weight'];
+                $this->choice = $this->post['choice'];
 
                 $data= [
-                    'question_categori_id'=> $this->question_categori_id,
-                    'question'=> $this->question,
-                    'block'=> $this->block,
-                    'create_at'=> $this->create_at,
+                    'question_id'=> $this->question_id,
+                    'question_code'=> $this->question_code,
+                    'weight'=> $this->weight,
+                    'choice'=> $this->choice,
                 ];
-                $this->db->insert( $this->table, $data );
 
-                // # get last insert id
-                return $this->db->insert_id();
+                # return TRUE or FALSE
+                return $this->db->insert( $this->table, $data );
 
             }
         }

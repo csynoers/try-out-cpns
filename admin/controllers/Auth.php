@@ -1,12 +1,18 @@
 <?php
-class Auth extends CI_Controller{
+class Auth extends MY_Controller{
  
     function __construct(){
         parent::__construct();
+        if ( ! empty($this->uri->segment(2)) ) {
+            if ( $this->uri->segment(2)=='logout' ) {
+                $this->logout();
+            }
+        }
+
         # check session
         if( $this->session->userdata('root') ){
-			redirect(base_url('dashboard'));
-		}
+            redirect(base_url('dashboard'));
+        }
         
         # load encrypt library
         $this->load->library('encryption');

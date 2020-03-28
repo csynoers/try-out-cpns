@@ -20,6 +20,8 @@ class Dashboard extends MY_Controller {
 	 */
 	public function index()
 	{
+		// $this->session->sess_destroy();
+        // redirect(base_url('auth'));
         $this->render_pages( 'dashboard' );
         
 	}

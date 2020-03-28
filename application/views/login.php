@@ -84,7 +84,7 @@
       <div class="social-auth-links text-center mb-3">
         <p>- Atau -</p>
         <p class="mb-1">
-          <a href="#">Saya lupa password</a>
+          <a href="#">Saya lupa passworddff</a>
         </p>
         <p class="mb-0">
           Belum punya akun ? <a href="register.html" class="text-center">Daftar baru</a>
