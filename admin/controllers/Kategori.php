@@ -46,7 +46,7 @@ class Kategori extends MY_Controller {
 				
             case 'delete':
 				# code...
-				$this->soal_delete;
+				$this->soal_delete();
                 break;
             
             default:
@@ -179,7 +179,30 @@ class Kategori extends MY_Controller {
 
 	public function soal_delete()
 	{
-		echo 'delete kategori soal baru';
+		# get question_categori_id
+		$id= $this->uri->segment(4);
+		if ( $this->M_question_categories->check_relations( $id ) > 0 ) {
+			# relation exist
+			$this->msg= [
+				'stats'=>0,
+				'msg'=>'Maaf Data ini sedang dipakai',
+			];
+		} else {
+			# no relations
+			if ( $this->M_question_categories->delete( $id ) ) {
+				$this->msg= [
+					'stats'=>1,
+					'msg'=>'Data Berhasil Dihapus',
+				];
+			} else {
+				$this->msg= [
+				'stats'=>0,
+					'msg'=>'Maaf Data Gagal Dihapus',
+				];
+			}
+		}
+			
+		echo json_encode( $this->msg );
 	}
 	/* ==================== END : KATEGORI SOAL  ==================== */
 }

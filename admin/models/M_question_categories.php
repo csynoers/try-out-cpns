@@ -36,9 +36,25 @@
 
             }
         }
-        public function check_relations()
+        public function check_relations($id=NULL)
         {
+            if ( $id ) {
+                $this->db->where($this->primaryKey,$id);
+            }
 
+            $this->db->select('*');
+            $this->db->from($this->table);
+            $this->db->join('questions', "questions.question_id = {$this->primaryKey}");
+            $query = $this->db->get();
+
+            return $query->num_rows();
+        }
+        public function delete($id)
+        {
+            $where= [
+                "{$this->primaryKey}"=> $id
+            ];
+            return $this->db->delete($this->table,$where);
         }
     }
     
