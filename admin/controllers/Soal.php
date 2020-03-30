@@ -49,7 +49,20 @@ class Soal extends MY_Controller {
 					{$data['options_kategori_soal']}
 				</div>
 				<div id='fieldChoices'></div>
-				<button type='submit' class='btn btn-primary'>Publish</button>
+				<div class='form-group'>
+					<label class='d-block'>Publish</label>
+					<div class='form-check-inline'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='publish' value='0' required='' checked=''>YES
+						</label>
+						</div>
+						<div class='form-check-inline'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='publish' value='1' required=''>NO
+						</label>
+					</div>
+				</div>
+				<button type='submit' class='btn btn-primary'>Save</button>
 			</form>
         ";
 		echo $html;
@@ -68,6 +81,11 @@ class Soal extends MY_Controller {
 		foreach ($data['rows'] as $key => $value) {
 			$data['action']   		= base_url();		
 			$data['data_action']  	= base_url().'soal/store/'.$this->uri->segment(3);
+
+			$checked_option = [
+				($value->block_mod=='YES' ? 'checked' : NULL ),
+				($value->block_mod=='NO' ? 'checked' : NULL ),
+			];
 			
 			if ( $value->true_question=='same' ) {
 				$value->title_jawaban = '<hr><label>Silahkan Masukan Jawaban dan pilih Jawaban Benar</label>';
@@ -132,6 +150,19 @@ class Soal extends MY_Controller {
 					<div id='fieldChoices'>
 						{$value->title_jawaban}
 						{$value->choices}
+					</div>
+					<div class='form-group'>
+						<label class='d-block'>Publish</label>
+						<div class='form-check-inline'>
+							<label class='form-check-label'>
+								<input type='radio' class='form-check-input' name='publish' value='0' required='' {$checked_option[0]}>YES
+							</label>
+							</div>
+							<div class='form-check-inline'>
+							<label class='form-check-label'>
+								<input type='radio' class='form-check-input' name='publish' value='1' required='' {$checked_option[1]}>NO
+							</label>
+						</div>
 					</div>
 					<input type='hidden' name='true_question' value='{$value->true_question}' >
 					<button type='submit' class='btn btn-primary'>Publish</button>

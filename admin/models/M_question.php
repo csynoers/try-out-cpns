@@ -40,7 +40,7 @@
             } else { # insert
                 $this->question_categori_id = $this->post['question_categori_id'];
                 $this->question             = $this->post['question'];
-                $this->block                = '0';
+                $this->block                = $this->post['publish'];
                 $this->create_at            = date('Y-m-d H:i:s');
 
                 $data= [
