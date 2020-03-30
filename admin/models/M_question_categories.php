@@ -17,6 +17,7 @@
             if ( $this->uri->segment(4) ) { # update
                 $data= [
                     'title'=> $this->post['title'],
+                    'block'=> $this->post['publish'],
                 ];
                 $where= [
                     $this->primaryKey => $this->uri->segment(4)
@@ -26,11 +27,18 @@
             } else { # insert
                 $data= [
                     'title'=> $this->post['title'],
+                    'true_question'=> $this->post['true_question'],
+                    'block'=> $this->post['publish'],
+                    'true_grade'=> ($this->post['true_question']=='same'? 5 : 0 ),
                     'create_at'=> date('Y-m-d H:i:s'),
                 ];
                 return $this->db->insert( $this->table ,$data);
 
             }
+        }
+        public function check_relations()
+        {
+
         }
     }
     

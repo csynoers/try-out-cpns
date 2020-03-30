@@ -66,7 +66,33 @@ class Kategori extends MY_Controller {
 					<label>Nama kategori soal</label>
 					<input type='text' name='title' class='form-control' placeholder='Ketikan nama kategori soal disini ...' required=''>
 				</div>
-				<button type='submit' class='btn btn-primary'>Publish</button>
+				<div class='form-group'>
+					<label>Pilih jenis penilaian jawaban</label>
+					<div class='form-check'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='true_question' value='same' required=''>Bobot nilai jawaban salah 0 dan jawaban benar 5
+						</label>
+					</div>
+					<div class='form-check'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='true_question' value='different' required=''>Bobot nilai setiap jawaban berbeda
+						</label>
+					</div>
+				</div>
+				<div class='form-group'>
+					<label class='d-block'>Publish</label>
+					<div class='form-check-inline'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='publish' value='0' required='' checked=''>YES
+						</label>
+						</div>
+						<div class='form-check-inline'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='publish' value='1' required=''>NO
+						</label>
+					</div>
+				</div>
+				<button type='submit' class='btn btn-primary'>Save</button>
 			</form>
         ";
 		echo $html;
@@ -77,13 +103,35 @@ class Kategori extends MY_Controller {
 		$data['rows']			= $this->M_question_categories->get_question_categories( $this->uri->segment(4) );
 		foreach ($data['rows'] as $key => $value) {		
 			$data['data_action']  = base_url().'kategori/soal/store/'.$this->uri->segment(4);		
+			$jenis_penilaian= ($value->true_question=='same'? 'Bobot nilai jawaban salah 0 dan jawaban benar 5' : 'Bobot nilai setiap jawaban berbeda' ) ;
+			$checked_option = [
+				($value->block=='0' ? 'checked' : NULL ),
+				($value->block=='1' ? 'checked' : NULL ),
+			];
 			$html= "
 				<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
 					<div class='form-group'>
 						<label>Title</label>
 						<input value='{$value->title}' type='text' name='title' class='form-control' placeholder='Type the title page here ...' required=''>
 					</div>
-					<button type='submit' class='btn btn-primary'>Publish</button>
+					<div class='form-group'>
+						<label>Jenis penilaian jawaban <small><span class='text-info'>*)Untuk jenis penilaian tidak bisa diubah</span></small></label>
+						<span class='form-control'>{$jenis_penilaian}</span>
+					</div>
+					<div class='form-group'>
+						<label class='d-block'>Publish</label>
+						<div class='form-check-inline'>
+							<label class='form-check-label'>
+								<input type='radio' class='form-check-input' name='publish' value='0' required='' {$checked_option[0]}>YES
+							</label>
+							</div>
+							<div class='form-check-inline'>
+							<label class='form-check-label'>
+								<input type='radio' class='form-check-input' name='publish' value='1' required='' {$checked_option[1]}>NO
+							</label>
+						</div>
+					</div>
+					<button type='submit' class='btn btn-primary'>Save</button>
 				</form>
 			";
 		}
