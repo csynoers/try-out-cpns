@@ -165,7 +165,7 @@ class Soal extends MY_Controller {
 						</div>
 					</div>
 					<input type='hidden' name='true_question' value='{$value->true_question}' >
-					<button type='submit' class='btn btn-primary'>Publish</button>
+					<button type='submit' class='btn btn-primary'>Save</button>
 				</form>
 			";
 		}
@@ -318,6 +318,37 @@ class Soal extends MY_Controller {
 		}
 	}
 	/* ==================== END : PROCESS DATA STORE ==================== */
+
+	/* ==================== START : PROCESS DELETE DATA ==================== */
+	public function delete()
+	{
+		# get question_categori_id
+		$id= $this->uri->segment(3);
+		
+		if ( $this->M_question->check_relations( $id ) > 0 ) {
+			# relation exist
+			$this->msg= [
+				'stats'=>0,
+				'msg'=>'Maaf Data ini sedang dipakai',
+			];
+		} else {
+			# no relations
+			if ( $this->M_question->delete( $id ) ) {
+				$this->msg= [
+					'stats'=>1,
+					'msg'=>'Data Berhasil Dihapus',
+				];
+			} else {
+				$this->msg= [
+				'stats'=>0,
+					'msg'=>'Maaf Data Gagal Dihapus',
+				];
+			}
+		}
+			
+		echo json_encode( $this->msg );
+	}
+	/* ==================== END : PROCESS DELETE DATA ==================== */
 
 	/* ==================== START : SELECT OPTIONS KATEGORI SOAL ==================== */
 	protected function options_kategori_soal()

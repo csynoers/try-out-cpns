@@ -2,10 +2,14 @@
     class M_question extends CI_Model
     {
         protected $table = 'questions'; 
+        protected $primaryKey = 'questions.question_id'; 
         protected $question_categori_id;
         protected $question;
         protected $block;
         protected $create_at;
+
+        protected $tableChoices = 'choices';
+        protected $tableChoicesRelation = 'choices.question_id=questions.question_id';
 
         public function get_question( $id=NULL )
         {
@@ -55,6 +59,19 @@
                 return $this->db->insert_id();
 
             }
+        }
+        public function check_relations($id=NULL)
+        {
+            if ( $id ) {
+                $this->db->where($this->primaryKey,$id);
+            }
+
+            $this->db->select('*');
+            $this->db->from($this->table);
+            $this->db->join($this->tableChoices, $this->tableChoicesRelation);
+            $query = $this->db->get();
+
+            return $query->num_rows();
         }
     }
     
