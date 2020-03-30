@@ -60,7 +60,20 @@ class Pages extends MY_Controller {
 					<label>Deskripsi</label>
 					<textarea name='description' class='form-control mytextarea'></textarea>
 				</div>
-				<button type='submit' class='btn btn-primary'>Publish</button>
+				<div class='form-group'>
+					<label class='d-block'>Publish</label>
+					<div class='form-check-inline'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='publish' value='0' required='' checked=''>YES
+						</label>
+						</div>
+						<div class='form-check-inline'>
+						<label class='form-check-label'>
+							<input type='radio' class='form-check-input' name='publish' value='1' required=''>NO
+						</label>
+					</div>
+				</div>
+				<button type='submit' class='btn btn-primary'>Save</button>
 			</form>
         ";
 		echo $html;
@@ -75,6 +88,12 @@ class Pages extends MY_Controller {
 			$data['action']   		= base_url();		
 			$data['data_action']  	= base_url().'pages/store/'.$this->uri->segment(3);		
 			$data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
+
+			$checked_option = [
+				($value->block=='0' ? 'checked' : NULL ),
+				($value->block=='1' ? 'checked' : NULL ),
+			];
+
 			$html= "
 				<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
 					<div class='form-group'>
@@ -97,7 +116,20 @@ class Pages extends MY_Controller {
 						<label>Deskripsi</label>
 						<textarea name='description' class='form-control mytextarea'>{$value->description}</textarea>
 					</div>
-					<button type='submit' class='btn btn-primary'>Publish</button>
+					<div class='form-group'>
+						<label class='d-block'>Publish</label>
+						<div class='form-check-inline'>
+							<label class='form-check-label'>
+								<input type='radio' class='form-check-input' name='publish' value='0' required='' {$checked_option[0]}>YES
+							</label>
+							</div>
+							<div class='form-check-inline'>
+							<label class='form-check-label'>
+								<input type='radio' class='form-check-input' name='publish' value='1' required='' {$checked_option[1]}>NO
+							</label>
+						</div>
+					</div>
+					<button type='submit' class='btn btn-primary'>Save</button>
 				</form>
 			";
 		}

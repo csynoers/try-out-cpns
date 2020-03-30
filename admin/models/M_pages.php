@@ -16,6 +16,7 @@
                     'title'=> $this->post['title'],
                     'slug'=> $this->post['slug'],
                     'description'=> $this->post['description'],
+                    'block'=> $this->post['publish'],
                 ];
                 $where= [
                     'id'=> $this->uri->segment(3)
@@ -27,6 +28,7 @@
                     'title'=> $this->post['title'],
                     'slug'=> $this->post['slug'],
                     'description'=> $this->post['description'],
+                    'block'=> $this->post['publish'],
                     'create_at'=> date('Y-m-d H:i:s'),
                 ];
                 return $this->db->insert('pages',$data);
