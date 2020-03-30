@@ -26,108 +26,70 @@ class Ujian extends MY_Controller {
 	/* ==================== START : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi}==================== */
 	public function konfigurasi()
 	{
-		$data['rows'] = $this->M_exam_configs->get();
-		// $this->debugs($data);
-		$this->render_pages( 'konfigurasi_ujian', $data );
+		if ( $this->uri->segment(3) ) {
+			# jika segment ke-3 tidak kosong cek nilai segment ke-3 get atau post
+			if ( $this->uri->segment(3)=='get' ) {
+				# jika nilai segment ke-3 sama dengan get maka panggil proses edit konfigurasi
+				if ( $this->uri->segment(4) ) {
+					$this->konfigurasi_edit( $this->uri->segment(4) );
+				}
+			}
+
+			if ( $this->uri->segment(3)=='post' ) {
+				# jika nilai segment ke-3 sama dengan get maka panggil proses store konfigurasi
+				if ( $this->uri->segment(4) ) {
+					$this->konfigurasi_store( $this->uri->segment(4) );
+				}
+			}
+
+		} else {
+			# jika segment ke-3 kosong
+			$data['rows'] = $this->M_exam_configs->get();
+			// $this->debugs($data);
+			$this->render_pages( 'konfigurasi_ujian', $data );
+
+		}
         
 	}
 	/* ==================== END : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi}==================== */
-
-	/* ==================== START : FORM ADD PAGES url{pages/add}==================== */
-	public function add()
+	
+	/* ==================== START : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi/get/$id}==================== */
+	public function konfigurasi_edit($id)
 	{
-		$data['action']   		= base_url();		
-		$data['data_action']  	= base_url() .'pages/store';		
-		$data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
-		$html= "
-			<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' method='post' enctype='multipart/form-data'>
-				<div class='form-group'>
-					<label>Title</label>
-					<input type='text' name='title' class='form-control' placeholder='Type the title page here ...' required=''>
-				</div>
-				<div class='form-group'>
-					<label>Slug <small class='text-info'>*)digunakan untuk seo format penulisan huruf kecil semua gunakan tanda '-' untuk memisahkan kata </small></label>
-					<div class='input-group mb-3'>
-						<div class='input-group-prepend'>
-							<span class='input-group-text'><i class='fa fa-link'></i></span>
-						</div>
-						<div class='input-group-prepend'>
-							<span class='input-group-text'>{$data['slug']}</span>
-						</div>
-						<input type='text' name='slug' class='form-control' placeholder='ex: title-page' required=''>
-					</div>
-				</div>
-				<div class='form-group'>
-					<label>Deskripsi</label>
-					<textarea name='description' class='form-control mytextarea'></textarea>
-				</div>
-				<div class='form-group'>
-					<label class='d-block'>Publish</label>
-					<div class='form-check-inline'>
-						<label class='form-check-label'>
-							<input type='radio' class='form-check-input' name='publish' value='0' required='' checked=''>YES
-						</label>
-						</div>
-						<div class='form-check-inline'>
-						<label class='form-check-label'>
-							<input type='radio' class='form-check-input' name='publish' value='1' required=''>NO
-						</label>
-					</div>
-				</div>
-				<button type='submit' class='btn btn-primary'>Save</button>
-			</form>
-        ";
-		echo $html;
-	}
-	/* ==================== END : FORM ADD PAGES ==================== */
+		$data['rows'] = $this->M_exam_configs->get($id);
 
-	/* ==================== START : FORM EDIT PAGES url{pages/edit}==================== */
-	public function edit()
-	{
-		$data['rows']			= $this->M_pages->get_pages( $this->uri->segment(3) );
 		foreach ($data['rows'] as $key => $value) {
 			$data['action']   		= base_url();		
-			$data['data_action']  	= base_url().'pages/store/'.$this->uri->segment(3);		
-			$data['slug']			= "{$_SERVER['SERVER_NAME']}/pages/";
+			$data['data_action']  	= base_url().'ujian/konfigurasi/post/'.$this->uri->segment(4);		
 
-			$checked_option = [
-				($value->block=='0' ? 'checked' : NULL ),
-				($value->block=='1' ? 'checked' : NULL ),
-			];
+			$jenis_penilaian= ($value->true_question=='same'? 'Bobot nilai jawaban salah 0 dan jawaban benar 5' : 'Bobot nilai setiap jawaban berbeda' ) ;
 
 			$html= "
 				<form action='javascript:void(0)' data-action='{$data['data_action']}' role='form' id='addNew' method='post' enctype='multipart/form-data'>
 					<div class='form-group'>
 						<label>Title</label>
-						<input value='{$value->title}' type='text' name='title' class='form-control' placeholder='Type the title page here ...' required=''>
+						<span class='form-control font-weight-normal'>{$value->title}</span>
 					</div>
 					<div class='form-group'>
-						<label>Slug <small class='text-info'>*)digunakan untuk seo format penulisan huruf kecil semua gunakan tanda '-' untuk memisahkan kata </small></label>
+						<label>Jenis penilaian jawaban</label>
+						<span class='form-control font-weight-normal'>{$jenis_penilaian}</span>
+					</div>
+					<div class='form-group'>
+						<label><small class='text-info'>*) Masukan batas waktu menegerjakan dan Jumlah soal dibawah ini :</small></label>
 						<div class='input-group mb-3'>
 							<div class='input-group-prepend'>
-								<span class='input-group-text'><i class='fa fa-link'></i></span>
+								<span class='input-group-text'>Batas waktu pengerjaan</span>
 							</div>
+							<input min='1' value='{$value->exam_limit}' type='number' name='exam_limit' class='form-control' placeholder='Masukan batas waktu pengerjaan disini type number...' required=''>
 							<div class='input-group-prepend'>
-								<span class='input-group-text'>{$data['slug']}</span>
+								<span class='input-group-text'>Menit</span>
 							</div>
-							<input value='{$value->slug}' type='text' name='slug' class='form-control' placeholder='ex: title-page' required=''>
 						</div>
-					</div>
-					<div class='form-group'>
-						<label>Deskripsi</label>
-						<textarea name='description' class='form-control mytextarea'>{$value->description}</textarea>
-					</div>
-					<div class='form-group'>
-						<label class='d-block'>Publish</label>
-						<div class='form-check-inline'>
-							<label class='form-check-label'>
-								<input type='radio' class='form-check-input' name='publish' value='0' required='' {$checked_option[0]}>YES
-							</label>
+						<div class='input-group mb-3'>
+							<div class='input-group-prepend'>
+								<span class='input-group-text'>Jumlah soal</span>
 							</div>
-							<div class='form-check-inline'>
-							<label class='form-check-label'>
-								<input type='radio' class='form-check-input' name='publish' value='1' required='' {$checked_option[1]}>NO
-							</label>
+							<input min='1' max='{$value->count_of_question}' value='{$value->number_of_questions}' type='number' name='number_of_questions' class='form-control' placeholder='Masukan jumlah soal disini type number...' required=''>
 						</div>
 					</div>
 					<button type='submit' class='btn btn-primary'>Save</button>
@@ -135,46 +97,29 @@ class Ujian extends MY_Controller {
 			";
 		}
 		echo $html;
-	}
-	/* ==================== END : FORM EDIT PAGES ==================== */
+		// $this->debugs($data);
+	} 
+	/* ==================== END : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi/get/$id}==================== */
 
-	/**
-	 * ==================== START : PROCESS DATA STORE url{pages/store/id}==================== 
-	 * id = bersifat optional (jika terdapat id maka process update jika tidak, maka proses insert)
-	 * */
-	public function store()
+	/* ==================== START : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi/post/$id}==================== */
+	public function konfigurasi_store()
 	{
-		if ( $this->uri->segment(3) ) { # update data
-			$this->M_pages->post= $this->input->post();
-			if ( $this->M_pages->store() ) {
-				$this->msg= [
-					'stats'=> 1,
-					'msg'=> 'Data Berhasil Diubah',
-				];
-			} else {
-				$this->msg= [
-					'stats'=> 0,
-					'msg'=> 'Data Gagal Diubah',
-				];
-			}
-			echo json_encode( $this->msg );
-		} else { # insert data
-			$this->M_pages->post= $this->input->post();
-			if ( $this->M_pages->store() ) {
-				$this->msg= [
-					'stats'=> 1,
-					'msg'=> 'Data Berhasil Ditambahkan',
-				];
-			} else {
-				$this->msg= [
-					'stats'=> 0,
-					'msg'=> 'Data Gagal Ditambahkan',
-				];
-			}
-			echo json_encode( $this->msg );
+		$this->M_exam_configs->post= $this->input->post();
+		
+		if ( $this->M_exam_configs->store() ) {
+			$this->msg= [
+				'stats'=> 1,
+				'msg'=> 'Konfigurasi ujian berhasil diubah',
+			];
+		} else {
+			$this->msg= [
+				'stats'=> 0,
+				'msg'=> 'Konfigurasi ujian gagal diubah',
+			];
 		}
+		echo json_encode( $this->msg );
 	}
-	/* ==================== END : PROCESS DATA STORE ==================== */
+	/* ==================== END : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi/post/$id}==================== */
 
 	/* ==================== START : PROCESS DELETE DATA ==================== */
 	public function delete()

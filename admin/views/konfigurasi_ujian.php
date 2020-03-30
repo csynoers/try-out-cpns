@@ -38,15 +38,15 @@
                 <?php
                   foreach ($rows as $key => $value) {
                     $value->no          = ($key+1);
-                    $value->href_edit   = base_url('kategori/soal/edit/'.$value->question_categori_id);
-                    $value->href_delete = base_url('kategori/soal/delete/'.$value->question_categori_id);
+                    $value->href_lihat_soal = base_url('soal/index/?kategori='.$value->question_categori_id);
+                    $value->href_edit   = base_url('ujian/konfigurasi/get/'.$value->question_categori_id);
                     
                     echo "
                       <tr>
                         <td>{$value->no}</td>
                         <td>{$value->title}</td>
                         <td>{$value->exam_limit_mod}</td>
-                        <td>{$value->number_of_questions_mod}</td>
+                        <td>{$value->number_of_questions_mod} dari {$value->count_of_question} Soal</td>
                         <td>
                           <div class='btn-group'>
                             <button type='button' class='btn btn-default'>Action</button>
@@ -55,8 +55,8 @@
                               <span class='sr-only'>Toggle Dropdown</span>
                             </button>
                             <div class='dropdown-menu' role='menu' x-placement='top-start' style='position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(67px, -165px, 0px);'>
-                              <a class='dropdown-item form-edit' href='javscript:void(0)' data-title='Edit kategori soal' data-href='{$value->href_edit}'>Edit</a>
-                              <a class='dropdown-item delete' href='{$value->href_delete}'>Delete</a>
+                            <a class='dropdown-item' href='{$value->href_lihat_soal}' title='Lihat soal {$value->title}'>Lihat Soal</a>
+                              <a class='dropdown-item form-edit' href='javscript:void(0)' data-title='Edit Konfigurasi Ujian: {$value->title}' data-href='{$value->href_edit}'>Edit</a>
                             </div>
                           </div>
                         </td>
