@@ -51,7 +51,8 @@ class Kategori extends MY_Controller {
             
             default:
                 # code...
-                $data['rows'] = $this->M_question_categories->get_question_categories();
+				$data['rows'] = $this->M_question_categories->get_question_categories();
+				// $this->debugs($data);
                 $this->render_pages( 'question_categories', $data );
                 break;
         }

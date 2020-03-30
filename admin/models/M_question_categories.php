@@ -9,7 +9,7 @@
             if ( $id ) {
                 $this->db->where($this->primaryKey,$id);
             }
-            $this->db->select("*,DATE_FORMAT(question_categories.create_at, '%W,  %d %b %Y') AS create_at_mod, IF(question_categories.block='0','YES','NO') AS block_mod");
+            $this->db->select("*,DATE_FORMAT(question_categories.create_at, '%W,  %d %b %Y') AS create_at_mod, IF(question_categories.block='0','YES','NO') AS block_mod,(SELECT COUNT(*) FROM `questions` WHERE `questions`.`question_categori_id`={$this->primaryKey}) AS count_of_question");
             return $this->db->get( $this->table )->result();
         }
         public function store()
