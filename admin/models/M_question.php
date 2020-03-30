@@ -16,6 +16,9 @@
             if ( $id ) {
                 $this->db->where('questions.question_id',$id);
             }
+            if ( $this->input->get('kategori') ) {
+                $this->db->where('question_categories.question_categori_id',$this->input->get('kategori'));
+            }
             $this->db->select("
                 *,
                 DATE_FORMAT(questions.create_at, '%W,  %d %b %Y') AS create_at_mod,
