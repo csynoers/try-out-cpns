@@ -43,7 +43,7 @@
                   foreach ($rows as $key => $value) {
                     $value->no          = ($key+1);
                     $value->href_edit   = base_url('pages/edit/'.$value->id);
-                    $value->href_delete = base_url('admin/data-guru-delete/'.$value->id);
+                    $value->href_delete = base_url('pages/delete/'.$value->id);
                     
                     echo "
                       <tr>

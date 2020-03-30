@@ -35,5 +35,12 @@
 
             }
         }
+        public function delete($id)
+        {
+            $where= [
+                'id'=> $id
+            ];
+            return $this->db->delete('pages',$where);
+        }
     }
     

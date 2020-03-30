@@ -174,4 +174,22 @@ class Pages extends MY_Controller {
 		}
 	}
 	/* ==================== END : PROCESS DATA STORE ==================== */
+
+	/* ==================== START : PROCESS DELETE DATA ==================== */
+	public function delete()
+	{
+		if ( $this->M_pages->delete( $this->uri->segment(3) ) ) {
+			$this->msg= [
+				'stats'=>1,
+				'msg'=>'Data Berhasil Dihapus',
+			];
+		} else {
+			$this->msg= [
+			'stats'=>0,
+				'msg'=>'Maaf Data Gagal Dihapus',
+			];
+		}
+		echo json_encode($this->msg);
+	}
+	/* ==================== END : PROCESS DELETE DATA ==================== */
 }
