@@ -27,6 +27,8 @@ class Soal extends MY_Controller {
 	/* ==================== START : DAFTAR SOAL ==================== */
 	public function index()
 	{
+		$this->load->helper('text');
+		$data['kategori_soal'] = $this->M_question_categories->get_question_categories();
 		$data['rows'] = $this->M_question->get_question();
 		$this->render_pages( 'question', $data );
 	}
