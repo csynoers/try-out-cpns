@@ -25,4 +25,19 @@ class MY_Controller extends CI_Controller{
             'pages' => $this->M_pages->get()
         ];
     }
+
+    /* ==================== START : FOR DEBUG ONLY ==================== */
+	public function debugs( $data )
+	{
+        if ( ENVIRONMENT=='development' ) { # debug works
+            echo '
+                <pre>
+                    '.strip_tags(json_encode($data,JSON_PRETTY_PRINT)).'
+                </pre>
+                
+            ';
+        }
+                
+	}
+	/* ==================== END : FOR DEBUG ONLY ==================== */
 }

@@ -1,14 +1,76 @@
 <?php
-class Auth extends CI_Controller{
+class Auth extends MY_Controller{
  
     function __construct(){
-        parent::__construct();		
-        $this->load->model('m_auth');
+        parent::__construct();
+        /**
+         * LOAD MODEL:
+         * 1. M_auth (get data from users table)
+         */		
+        $this->load->model('M_auth');
+
+        # load encrypt library
+        $this->load->library('encryption');
+        $this->encryption->initialize(
+            array(
+                'cipher' => 'aes-256',
+                'mode' => 'ctr',
+                'key' => '3s0c9m7@gmail.com'
+            )
+        );
 
     }
 
-    function index(){
-        $this->load->view('login');
+    /* ==================== START : LOGIN PAGE url{auth/index} ==================== */
+    public function index(){
+        $csrf = array(
+            'csrf_name' => $this->security->get_csrf_token_name(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+
+        $this->load->view('login',$csrf);
+    }
+    /* ==================== END : LOGIN PAGE url{auth/index} ==================== */
+
+    /* ==================== START : REGISTER PAGE url{auth/register} ==================== */
+    public function register(){
+        $csrf = array(
+            'csrf_name' => $this->security->get_csrf_token_name(),
+            'csrf_hash' => $this->security->get_csrf_hash()
+        );
+
+        $this->load->view('register',$csrf);
+    }
+    /* ==================== END : REGISTER PAGE url{auth/register} ==================== */
+
+    public function store()
+    {
+        # filter xss clean before send to model
+        $post = array(
+            'nik' => $this->security->xss_clean($this->input->post('nik')),
+            'fullname' => $this->security->xss_clean($this->input->post('fullname')),
+            'email' => $this->security->xss_clean($this->input->post('email')),
+            'telp' => $this->security->xss_clean($this->input->post('telp')),
+            'username' => $this->security->xss_clean($this->input->post('username')),
+            'password' => $this->encryption->encrypt($this->input->post('password')),
+        );
+
+        # send $post variable to model
+        $this->M_auth->post = $post;
+
+        # cek apakah user sudah dengan nik/username/email/telp sudah ada sebelumnya
+        if ( $this->M_auth->check_already_exist() > 0 ) {
+            $this->session->set_flashdata('msg', 'Maaf! data nik/username/email/telp sudah pernah digunakan silahkan coba lagi! atau silahkan klik link <a href="#">Saya lupa password</a> ');
+            redirect(base_url('auth/register'));
+
+        } else {
+            # jika belum ada jalankan proses store data
+            $this->debugs( $this->M_auth->store() );
+            
+        }
+        
+
+        $this->debugs($this->M_auth);
     }
 
     function process(){
@@ -20,13 +82,13 @@ class Auth extends CI_Controller{
             'password' => $password
         );
         
-        $cek_users  = $this->m_auth->check_auth("users",$where_users)->num_rows();
+        $cek_users  = $this->M_auth->check_auth("users",$where_users)->num_rows();
         // print_r($cek_users);
         // die();
         
         if ( $cek_users > 0 ) {
             # code...
-            $row  = $this->m_auth->check_auth("users",$where_users)->row();
+            $row  = $this->M_auth->check_auth("users",$where_users)->row();
             $data_session = array(
                 'username'  => $username,
                 'password'  => $password,
