@@ -101,6 +101,7 @@ class Auth extends MY_Controller{
             if ( $this->encryption->decrypt( $row->password ) == $password ) {
                 # set session user
                 // $this->debugs($row->level);
+                $row->nominal_transfer = 100000+rand ( 1 , 999 );
                 $this->session->set_userdata([ "{$row->level}" => $row ]);
                 redirect( base_url() );
 

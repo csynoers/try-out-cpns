@@ -83,7 +83,7 @@
             {
               echo '
                 <li class="nav-item ">
-                  <a href="'.base_url('ujian').'" class="nav-link">
+                  <a href="'.base_url('ujian').'" class="nav-link '.($this->uri->segment(1)=='ujian' ? 'active' : NULL).'">
                     <i class="nav-icon fa fa-sign-out"></i>
                     <p>
                       Try Out
