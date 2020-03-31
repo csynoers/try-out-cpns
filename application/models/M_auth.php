@@ -81,6 +81,6 @@ class M_auth extends CI_Model{
 
 		$this->db->join( $this->tableUsersDetail, $this->tableRelationUsersDetail, 'left' );
 
-		return $this->db->get( $this->table )->num_rows();
+		return $this->db->get( $this->table );
 	}
 }

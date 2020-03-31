@@ -55,13 +55,13 @@
       ?>
       <form action="<?php echo base_url('auth/process'); ?>" method="post">
         <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control" placeholder="Masukan username" required="" autocomplete="off">
+          <input name="username" type="text" class="form-control" placeholder="NIK / username / email / telp" required="" autocomplete="on">
           <div class="input-group-append">
               <span class="fa fa-user input-group-text"></span>
           </div>
         </div>
         <div class="input-group mb-3">
-          <input name="password" type="password" class="form-control" placeholder="Masukan password" required="" autocomplete="off">
+          <input name="password" type="password" class="form-control" placeholder="Password" required="" autocomplete="on">
           <div class="input-group-append">
               <span class="fa fa-lock input-group-text"></span>
           </div>

@@ -23,7 +23,13 @@
 
     <!-- Right navbar links -->
     <div class="navbar-nav ml-auto">
-      <!-- <a href="<?php echo base_url('auth/logout'); ?>" class="btn btn-default">Logout</a> -->
+      <?php
+        if( $this->session->userdata('user') )
+        {
+          echo '<a href="'.base_url('auth/logout').'" class="btn btn-default mr-3">Profil</a>';
+          echo '<a href="'.base_url('auth/logout').'" class="btn btn-default">Logout</a>';
+        }
+      ?>
       
       <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
         <i class="fa fa-th-large"></i>
@@ -63,7 +69,7 @@
               echo '
                 <li class="nav-item ">
                   <a href="'.base_url('pages/'.$value->slug).'" class="nav-link '.( $active ).'">
-                    <i class="nav-icon fa fa-dashboard"></i>
+                    <i class="nav-icon fa fa-bookmark-o"></i>
                     <p>
                       '.$value->title.'
                     </p>
@@ -72,14 +78,48 @@
               ';
             }
           ?>
-          <li class="nav-item ">
-            <a href="<?= base_url('auth') ?>" class="nav-link">
-              <i class="nav-icon fa fa-dashboard"></i>
-              <p>
-                Login
-              </p>
-            </a>
-          </li>
+          <?php
+            if( $this->session->userdata('user') )
+            {
+              echo '
+                <li class="nav-item ">
+                  <a href="'.base_url('ujian').'" class="nav-link">
+                    <i class="nav-icon fa fa-sign-out"></i>
+                    <p>
+                      Try Out
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item ">
+                  <a href="'.base_url().'" class="nav-link">
+                    <i class="nav-icon fa fa-sign-out"></i>
+                    <p>
+                      Hasil Try Out
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item ">
+                  <a href="'.base_url('auth/logout').'" class="nav-link">
+                    <i class="nav-icon fa fa-sign-out"></i>
+                    <p>
+                      Logout
+                    </p>
+                  </a>
+                </li>
+              ';
+            } else {
+              echo '
+                <li class="nav-item ">
+                  <a href="'.base_url('auth').'" class="nav-link">
+                    <i class="nav-icon fa fa-sign-in"></i>
+                    <p>
+                      Login
+                    </p>
+                  </a>
+                </li>
+              ';
+            }
+          ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

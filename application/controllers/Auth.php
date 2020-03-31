@@ -59,14 +59,17 @@ class Auth extends MY_Controller{
         $this->M_auth->post = $post;
 
         # cek apakah user sudah dengan nik/username/email/telp sudah ada sebelumnya
-        if ( $this->M_auth->check_already_exist() > 0 ) {
+        $cek_users  = $this->M_auth->check_already_exist()->num_rows();
+        
+        if ( $cek_users > 0 ) {
             $this->session->set_flashdata('msg', 'Maaf! data nik/username/email/telp sudah pernah digunakan silahkan coba lagi! atau silahkan klik link <a href="#">Saya lupa password</a> ');
             redirect(base_url('auth/register'));
 
         } else {
             # jika belum ada jalankan proses store data
             $this->debugs( $this->M_auth->store() );
-            
+            $this->session->set_flashdata('msg', 'Terimakasih telah mendaftar, data berhasil dikirim. Silahkan buka email anda dan klik tautan yang kami kirimkan untuk aktivasi pendaftaran akun anda');
+            redirect( base_url() );
         }
         
 
@@ -74,47 +77,80 @@ class Auth extends MY_Controller{
     }
 
     function process(){
-        $username = $this->input->post('username');
-        $password = md5($this->input->post('password'));
-        
-        $where_users = array(
-            'username' => $username,
-            'password' => $password
+        # filter xss clean before send to model
+        $post = array(
+            'nik' => $this->security->xss_clean($this->input->post('username')),
+            'email' => $this->security->xss_clean($this->input->post('username')),
+            'telp' => $this->security->xss_clean($this->input->post('username')),
+            'username' => $this->security->xss_clean($this->input->post('username')),
+            'password' => $this->input->post('password'),
         );
+
+        # send $post variable to model
+        $this->M_auth->post = $post;
+
+        # cek apakah user sudah dengan nik/username/email/telp sudah ada sebelumnya
+        $cek_users  = $this->M_auth->check_already_exist();
         
-        $cek_users  = $this->M_auth->check_auth("users",$where_users)->num_rows();
-        // print_r($cek_users);
-        // die();
-        
-        if ( $cek_users > 0 ) {
+        if ( $cek_users->num_rows() > 0 ) {
             # code...
-            $row  = $this->M_auth->check_auth("users",$where_users)->row();
-            $data_session = array(
-                'username'  => $username,
-                'password'  => $password,
-                'level'     => $row->level,
-                'status'     => 'login',
-            );
+            $password = $post['password'];
+            $row      = $cek_users->row();
+
+            # if decrypt row->password same as $password
+            if ( $this->encryption->decrypt( $row->password ) == $password ) {
+                # set session user
+                // $this->debugs($row->level);
+                $this->session->set_userdata([ "{$row->level}" => $row ]);
+                redirect( base_url() );
+
+            }
+
+            # if decrypt row->password different with $password
+            else {
+                # code...
+                $this->session->set_flashdata('msg', 'username or password does not exist.');
+                redirect(base_url('auth'));
+            }
             
-            $this->session->set_userdata($data_session);
-            $url=[
-                'admin' => 'admin',
-                'guru' => 'guru',
-                'guru_kep_lab' => 'guru-kep-lab',
-                'siswa' => 'siswa',
-            ];
-            redirect(base_url( $url[$this->session->userdata('level')] ));
         }
         
         else{
             
-            $this->session->set_flashdata('msg', 'Maaf! Username atau Password anda salah!');
+            $this->session->set_flashdata('msg', 'username or password does not exist.');
             redirect(base_url('auth'));
         }
+        // die();
+        
+        // if ( $cek_users > 0 ) {
+        //     # code...
+        //     $row  = $this->M_auth->check_auth("users",$where_users)->row();
+        //     $data_session = array(
+        //         'username'  => $username,
+        //         'password'  => $password,
+        //         'level'     => $row->level,
+        //         'status'     => 'login',
+        //     );
+            
+        //     $this->session->set_userdata($data_session);
+        //     $url=[
+        //         'admin' => 'admin',
+        //         'guru' => 'guru',
+        //         'guru_kep_lab' => 'guru-kep-lab',
+        //         'siswa' => 'siswa',
+        //     ];
+        //     redirect(base_url( $url[$this->session->userdata('level')] ));
+        // }
+        
+        // else{
+            
+        //     $this->session->set_flashdata('msg', 'Maaf! Username atau Password anda salah!');
+        //     redirect(base_url('auth'));
+        // }
     }
 
     function logout(){
         $this->session->sess_destroy();
-        redirect(base_url('auth'));
+        redirect(base_url());
     }
 }
