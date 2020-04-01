@@ -93,15 +93,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item" >
-                <a href="<?php echo base_url('siswa/terdaftar') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'terdaftar') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('siswa/mendaftar') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'mendaftar') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Siswa Terdaftar</p>
+                  <p>Siswa Mendaftar</p>
                 </a>
               </li>
               <li class="nav-item" >
-                <a href="<?php echo base_url('siswa/aktif') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'aktif') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('siswa/terdaftar') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'terdaftar') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Siswa Aktif</p>
+                  <p>Siswa Terdaftar</p>
                 </a>
               </li>
               <li class="nav-item">
