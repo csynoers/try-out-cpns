@@ -84,6 +84,7 @@ class Auth extends MY_Controller{
             'telp' => $this->security->xss_clean($this->input->post('username')),
             'username' => $this->security->xss_clean($this->input->post('username')),
             'password' => $this->input->post('password'),
+            // 'password' => $this->encryption->encrypt($this->input->post('password')),
         );
 
         # send $post variable to model
@@ -100,10 +101,16 @@ class Auth extends MY_Controller{
             # if decrypt row->password same as $password
             if ( $this->encryption->decrypt( $row->password ) == $password ) {
                 # set session user
-                // $this->debugs($row->level);
-                $row->nominal_transfer = 100000+rand ( 1 , 999 );
-                $this->session->set_userdata([ "{$row->level}" => $row ]);
-                redirect( base_url() );
+                if ( $row->level=='root' ) {
+                    # code...level ADMIN
+                    $this->session->set_userdata([ "{$row->level}" => $row ]);
+                    redirect( base_url('admin@ics') );
+                } else {
+                    # code...level USER
+                    $row->nominal_transfer = 100000+rand ( 1 , 999 );
+                    $this->session->set_userdata([ "{$row->level}" => $row ]);
+                    redirect( base_url() );
+                }
 
             }
 

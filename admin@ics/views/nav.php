@@ -85,7 +85,7 @@
           </li>
           <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'siswa') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
-              <i class="nav-icon fa fa-clipboard"></i>
+              <i class="nav-icon fa fa-users"></i>
               <p>
                 Siswa
                 <i class="right fa fa-angle-left"></i>
@@ -93,15 +93,21 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item" >
-                <a href="<?php echo base_url('soal/index') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'index') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('siswa/terdaftar') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'terdaftar') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Semua Siswa</p>
+                  <p>Siswa Terdaftar</p>
+                </a>
+              </li>
+              <li class="nav-item" >
+                <a href="<?php echo base_url('siswa/aktif') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'aktif') ? 'active' : null ; ?>">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Siswa Aktif</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo base_url('admin/data-pelajaran')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pelajaran') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('siswa/konfirmasi')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pelajaran') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Tambah Soal</p>
+                  <p>Konfirmasi Pembayaran</p>
                 </a>
               </li>
             </ul>

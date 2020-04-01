@@ -10,15 +10,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="themes/adminlte/maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="themes/adminlte/code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="<?= base_url() ?>themes/adminlte/maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="themes/adminlte/adminlte.io/themes/dev/adminlte/dist/css/adminlte.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/iCheck/square/blue.css">
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="<?= base_url() ?>themes/adminlte/adminlte.io/themes/dev/adminlte/dist/css/adminlte.min.css">
   <style>
     .login-page {
       /* background: url("<?php echo base_url() ?>src/bg/bg.jpg"); */
@@ -84,11 +78,5 @@
 </div>
 <!-- /.login-box -->
 
-<!-- jQuery -->
-<script src="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- iCheck -->
-<script src="themes/adminlte/adminlte.io/themes/dev/adminlte/plugins/iCheck/icheck.min.js"></script>
 </body>
 </html>
