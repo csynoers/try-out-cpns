@@ -35,6 +35,7 @@
                 3. Upload bukti pembayaran dengan memilih menu "Konfirmasi Pembayaran"<br>
                 4. Jika pembayaran telah diverifikasi Sistem, akan ada notifikasi email untuk informasi token anda<br>
               </p>
+              <?= $token['info'] ?>
               <a href="javascript: void(0)" data-href="<?= $token['href'] ?>" data-title="<?= $token['title'] ?>" class="btn btn-primary btn-block form-load" ><?= $token['label'] ?></a>
             </div>
             <div class="card-body">
@@ -63,7 +64,7 @@
                     <span class="bg-info-gradient border-warning input-group-text">Soal</span>
                   </div>
                   <div class="input-group-prepend">
-                    <span class="bg-primary border-warning input-group-text"><a href="javascript: void(0)">Kerjakan Sekarang</a></span>
+                    <span class="bg-primary border-warning input-group-text"><a id="tryOut" href="javascript: void(0)" onclick="tryOut()" data-href="<?= base_url('ujian/proses') ?>" data-title="Try Out CAT CPNS" >Kerjakan Sekarang</a></span>
                   </div>
                 </div>
               </div>
@@ -115,3 +116,45 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+<script>
+  function copy_token(){
+    /* Get the text field */
+    let copyText = document.getElementById("token");
+    copyText.select();
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+
+    /* Alert the copied text */
+    alert("Copied the text: " + copyText.value);
+  }
+  function tryOut() {
+    let token = prompt("Please enter your token", "");
+    if ( token ) {
+      if ( $('#token').val()==token ) {
+        loadTryOut( token );
+        
+        /* triger on modal close */
+        $("#myModal").on('hidden.bs.modal', function(){
+          loadTryOut( token );
+        });
+        
+      } else {
+        alert( 'Maaf token anda salah' )
+      }
+
+    } else {
+      alert( 'Maaf token tidak boleh kosong' )
+    }
+  }
+
+  function loadTryOut( token )
+  {
+    let data = $( '#tryOut' ).data();
+    $.get( data.href+`/${token}`, function( d ){
+      $( '#myModal .modal-title' ).html( data.title );
+      $( '#myModal .modal-body' ).html( d );
+      $( '#myModal .modal-dialog' ).addClass( 'modal-lg' );
+      $( '#myModal' ).modal( 'show' );
+    },'html');
+  }
+</script>

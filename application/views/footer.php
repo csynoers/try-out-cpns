@@ -106,56 +106,28 @@ function getTanggalIndoSekarang()
 
 }
 
-function countDownUjian()
-{
-  // Set the date we're counting down to
-  var d= waktuUjian( $('td#countDownUjian').attr('data-tanggal') ,parseInt($('td#countDownUjian').attr('data-waktu')) );
-  var countDownDate = new Date(`${d.dates} ${d.end}`).getTime();
-  // var countDownDate = new Date("2019-07-14 15:37:25").getTime();
+  function getTimeDiff( datetime, start )
+  {
+    if ( start ) {
+      start = new Date(start);
+    } else {
+      start = new Date();
+    }
+    var lastTime = new Date(datetime);
+    var diffMs = (lastTime - start); // milliseconds between now
 
-  // Update the count down every 1 second
-  var x = setInterval(function() {
-
-    // Get today's date and time
-    var now = new Date().getTime();
-      
-    // Find the distance between now and the count down date
-    var distance = countDownDate - now;
-      
     // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-    // Output the result in an element with id="demo"
-    // document.getElementById("countDownUjian").innerHTML = days + "d " + hours + "h "
-    // + minutes + "m " + seconds + "s ";
-    document.getElementById("countDownUjian").innerHTML = hours + " Jam "
-    + minutes + " Menit " + seconds + " Detik ";
-    // If the count down is over, write some text 
-    if (distance < 0) { 
-      clearInterval(x);
-      $.get('<?php echo base_url() ?>siswa/proses-ujian/?timeout=true', function(data){
-        $('#myModal .modal-title').html('Proses Ujian');
-        $('#myModal .modal-body').html(data);
-        document.getElementById("countDownUjian").innerHTML = "Waktu Sudah Habis";
-        $('#myModal').modal('show');
-      } ,'html');
-    }
-  }, 1000);
-}
-  <?php
-    if ( $this->uri->segment(2)!='data-ujian' ) {
-      ?>
-        /* cek proses ujian */
-        $.get('<?php echo base_url() ?>siswa/cek-proses-ujian',function(data){
-          if ( data==1 ) 
-            window.location.replace('<?php echo base_url() ?>siswa/data-ujian')
-        })
-      <?php
-    }
-  ?>
+    // var days = Math.floor(diffMs / (1000 * 60 * 60 * 24) ); // days
+    var hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60) ); // hours
+    var minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+    return {
+      "distance" : diffMs,
+      "label" : `${hours} Jam, ${minutes} Menit ${seconds} Detik`
+    };
+  }
+
   /* ==================== START : LOAD FORM EDIT DATA ==================== */
   $( document ).on( 'click', '.form-load', function( e ){
     e.preventDefault();
@@ -200,6 +172,45 @@ function countDownUjian()
     });
   });
   /* ==================== END : PROCESS DATA STORE ==================== */
+
+  /* ==================== START : CHECK EXAM PROCESS ==================== */
+  if ( $('body').data('exam')=='1' ) {
+    loadTryOutWithSession();
+
+    /* triger on modal close */
+    $("#myModal").on('hidden.bs.modal', function(){
+      loadTryOutWithSession();
+    });
+  }
+  function loadTryOutWithSession() {
+    let data = {
+      "title" : "Try Out CAT CPNS",
+      "href" : "<?= base_url('ujian/proses') ?>",
+      "token" : $( 'body' ).data('token')
+    };
+    $.get( data.href+`/${data.token}`, function( d ){
+      $( '#myModal .modal-title' ).html( data.title );
+      $( '#myModal .modal-body' ).html( d );
+      $( '#myModal .modal-dialog' ).addClass( 'modal-lg' );
+      $('#examLimit').text( getTimeDiff($('#countDown').data('end'),$('#countDown').data('start')).label );
+      updateCountDown($('#countDown').data('end'));  
+      $( '#myModal' ).modal( 'show' );
+    },'html');
+  }
+  function updateCountDown(datetime)
+  {
+    setInterval(function() {
+      $('#countDown').text( getTimeDiff( datetime ).label )
+      // If the count down is over, write some text 
+      // if (distance < 0) {
+      //   clearInterval(x);
+      //   document.getElementById("demo").innerHTML = "EXPIRED";
+      // }
+    }, 1000)
+    
+  } 
+  /* ==================== END : CHECK EXAM PROCESS ==================== */
+  
 </script>
 </body>
 

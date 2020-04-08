@@ -40,5 +40,20 @@
 
             return $this->db->update( $this->table,$data);
         }
+
+        /* ==================== PROSES UJIAN ==================== */
+        public function proses_sql_rand($token,$kategori,$limit)
+        {
+            $this->db->where('questions.question_categori_id', $kategori);
+            $this->db->order_by($token, 'RANDOM');
+            $this->db->limit($limit);
+            return $this->db->get('questions')->result();
+        }
+        public function get_choices($question_id)
+        {
+            $this->db->where('choices.question_id', $question_id);
+            return $this->db->get('choices')->result();
+        }
+        /* ==================== PROSES UJIAN ==================== */
     }
     

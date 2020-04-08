@@ -22,9 +22,17 @@ class Ujian extends MY_Controller {
 	{
 		parent::__construct();
 		/**
-		 * LOAD MODEL :
+		 * # Check authentication 
+		 * # LOAD MODEL :
 		 * 1. 
 		 */
+
+		# Check authentication 
+        if( ! $this->session->userdata('user') ){
+            redirect(base_url());
+		}
+		
+		# load model
 		$this->load->model(['M_exam_configs','M_banks','M_exam_user_configs']);
 	}
 
@@ -36,6 +44,7 @@ class Ujian extends MY_Controller {
 			'href' => base_url('ujian/get-token'),
 			'title' => 'Dapatkan Token',
 			'label' => 'Dapatkan Token',
+			'info' => NULL,
 		);
 
 		$row_user_configs = $this->M_exam_user_configs->get( $this->session->userdata('user')->username );
@@ -56,6 +65,21 @@ class Ujian extends MY_Controller {
 					'title' => 'Detail Pembayaran untuk mendapatkan Token',
 					'label' => 'Detail Pembayaran',
 				);
+			}
+
+			if ( $row_user_configs->token ) {
+				# code...
+				$data['token']['info'] = "
+					<div class='border border-warning input-group mb-3 p-1'>
+						<div class='input-group-prepend'>
+							<span class='input-group-text'>Token anda</span>
+						</div>
+						<input id='token' type='text' class='form-control text-center' value='{$row_user_configs->token}'>
+						<div class='input-group-prepend'>
+							<span class='input-group-text btn' title='Copy Token' onclick='copy_token()'>Copy Clipboard</span>
+						</div>
+					</div>
+				";
 			}
 		}
 
@@ -241,4 +265,203 @@ class Ujian extends MY_Controller {
 		echo $html;
 	}
 
+	/* ==================== START : PROSES UJIAN ==================== */
+	public function proses()
+	{
+		if ( $this->uri->segment( 3 ) ) {
+			$token = $this->uri->segment( 3 );
+
+			$row_user_configs = $this->M_exam_user_configs->get( $this->session->userdata('user')->username );
+			if ( $token == $row_user_configs->token ) {
+				# code...
+				$this->proses_ujian( $token );
+
+			} else {
+				# code...
+				echo 'Hayoo mau ngapain :v';
+			}
+
+		} else {
+			echo 'Maaf token tidak boleh kosong';
+		}
+	}
+	protected function proses_ujian( $token )
+	{		
+		if ( empty($this->session->userdata('user')->examination_process) ) {
+			$exam_limit_total = 0;
+			$count_of_question_total = 0;
+			foreach ($this->M_exam_configs->get() as $key => $value) {
+				$exam_limit_total += (int) $value->exam_limit;
+				$count_of_question_total += (int) $value->number_of_questions_mod;
+	
+				$questions = $this->M_exam_configs->proses_sql_rand($token,$value->question_categori_id,$value->number_of_questions_mod);
+				foreach ($questions as $keyQuestion => $valueQuestion) {
+					$choices = $this->M_exam_configs->get_choices($valueQuestion->question_id);
+					foreach ($choices as $keyChoice => $valueChoice) {
+						$valueQuestion->choices[] = $valueChoice;
+					}
+					/**
+					 * if question_status same as:
+					 * 0 = default Or unanswered
+					 * 1 = answered
+					 */
+					$valueQuestion->no_soal = $keyQuestion+1;
+					$valueQuestion->rules_answer = ($value->true_question=='same' ? 'Jika jawaban salah nilainya 0 dan benar 5' : 'Nilai setiap jawaban berbeda 1-5' );
+					$valueQuestion->question_status = 0;
+					$valueQuestion->question_weight = 0;
+					$valueQuestion->question_answer_key = 0;
+	
+					$value->questions[] = $valueQuestion;
+				}
+	
+				$data['rows'][] = $value;
+			}
+			$_SESSION['user']->examination_process = TRUE;
+			$_SESSION['user']->exam_limit_total = $exam_limit_total;
+			$_SESSION['user']->count_of_question_total = $count_of_question_total;
+
+			# save $data variable to session
+			$_SESSION['user']->rows = $data['rows'];
+			$_SESSION['user']->token = $token;
+			$_SESSION['user']->exam_start = date('Y-m-d H:i:s');
+			$_SESSION['user']->exam_end = date('Y-m-d H:i:s',strtotime("+{$_SESSION['user']->exam_limit_total} minutes", strtotime($_SESSION['user']->exam_start)));
+		}
+		// $this->debugs($_SESSION);
+		// die();
+
+		$li = [];
+		foreach ($this->session->userdata('user')->rows as $key => $value) {
+			$value->active = ($key==0) ? 'active' : NULL ;
+			$value->aria_selected = ($key==0) ? 'true' : false;
+
+			$li[] = "
+				<li class='nav-item'>
+					<a class='nav-link {$value->active}' id='nav{$value->exam_config_id}-tab' data-toggle='tab' href='#nav{$value->exam_config_id}' role='tab' aria-controls='nav{$value->exam_config_id}' aria-selected='{$value->aria_selected}'>{$value->title}</a>
+				</li>
+			";
+		}
+		$li= implode('',$li);
+		
+		$tab = [];
+		foreach ($this->session->userdata('user')->rows as $key => $value) {
+			$value->active = ($key==0) ? 'show active' : NULL ;
+
+			$value->navQuestion = [];
+			$value->tabQuestion = [];
+			foreach ($value->questions as $keyQuestion => $valueQuestion) {
+				$valueQuestion->active = ($keyQuestion==0) ? 'active' : NULL ;
+				$value->navQuestion[] = "
+						<li class='nav-item'>
+							<a class='nav-link {$valueQuestion->active}' href='#nav{$valueQuestion->question_id}tab-pill' data-toggle='pill'>$valueQuestion->no_soal</a>
+						</li>
+				";
+
+				$valueQuestion->choices_html = [];
+				foreach ($valueQuestion->choices as $keyChoice => $valueChoice) {
+					$valueQuestion->choices_html[] = "
+						<tr>
+							<td class='row'>
+							<div class=''>
+								{$valueChoice->question_code}.&nbsp 
+							</div>
+							<div class=''>
+								<div class='form-check'>
+									<label class='form-check-label'>
+										<input type='radio' class='form-check-input' name='optradio'>{$valueChoice->choice}
+									</label>
+								</div>
+							</div>
+							</td>
+						</tr>
+					"; 
+					
+				}
+				$valueQuestion->choices_html = implode('',$valueQuestion->choices_html);
+
+				$value->tabQuestion[] = "
+						<div id='nav{$valueQuestion->question_id}tab-pill' class='container tab-pane {$valueQuestion->active}'>
+							<hr>
+							<label class='font-weight-normal text-muted'>
+								Soal ke <b>{$valueQuestion->no_soal}</b> dari <b>{$value->number_of_questions}</b>
+							</label>
+							<label class='float-right font-italic font-weight-light text-muted'>
+								<b>{$valueQuestion->rules_answer}</b>
+							</label><br>
+							<label>{$valueQuestion->no_soal}. Soal</label><br>
+							<label class='text-black-50 text-muted'>
+								Kategori: {$value->title}
+							</label><br>
+							<div class='text-justify font-weight-normal'>
+								{$valueQuestion->question}
+								<div class='card mt-3'>
+									<div class='card-body'>
+										<table class='table table-borderless table-hover'>
+											<tbody>
+												{$valueQuestion->choices_html}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+				";
+			}
+			$value->navQuestion = implode('',$value->navQuestion);
+			$value->tabQuestion = implode('',$value->tabQuestion);
+
+			$tab[] = "
+				<div class='tab-pane fade {$value->active}' id='nav{$value->exam_config_id}' role='tabpanel' aria-labelledby='nav{$value->exam_config_id}-tab'>
+					<!-- Nav pills -->
+					<ul class='mt-3 nav nav-pills' role='tablist'>
+						{$value->navQuestion}
+					</ul>
+					<!-- Tab panes -->
+					<div class='tab-content'>
+						{$value->tabQuestion}
+					</div>
+				</div>
+			";
+		}
+		$tab= implode('',$tab);
+		
+		$data['nav']['ul'] = "
+			<ul class='nav nav-tabs' id='myTab' role='tablist'>
+				{$li}
+			</ul>
+		";
+
+		$data['nav']['tab'] = "
+			<div class='tab-content' id='myTabContent'>
+				{$tab}
+			</div>
+		";
+
+		$data['navtab'] = implode('',$data['nav']); 
+
+		$data['html'] = "
+			<table class='table table-bordered font-weight-normal'>
+				<tbody>
+					<tr>
+						<td class='w-50'>Total Soal</td>
+						<td>".$this->session->userdata('user')->count_of_question_total." Soal</td>
+					</tr>
+					<tr>
+						<td>Batas Waktu Pengerjaan</td>
+						<td>".$this->session->userdata('user')->exam_limit_total." Menit (<span id='examLimit'>0</span>)</td>
+					</tr>
+					<tr>
+						<td>Sisa Waktu</td>
+						<td><span id='countDown' data-start='".$this->session->userdata('user')->exam_start."' data-end='".$this->session->userdata('user')->exam_end."'>0</span></td>
+					</tr>
+				</tbody>
+			</table>
+			{$data['navtab']}
+		";
+
+		echo $data['html'];
+		// print_r($data);
+		// $this->debugs( $data );
+		// $this->debugs( $this->M_exam_configs->proses_sql_rand($token,$kategori) );
+	}
+	/* ==================== END : PROSES UJIAN ==================== */
 }

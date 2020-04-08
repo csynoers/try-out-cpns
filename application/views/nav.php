@@ -1,4 +1,5 @@
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" data-exam="<?= empty($this->session->userdata('user')->examination_process) ? "0" : $this->session->userdata('user')->examination_process ; ?>" data-token="<?= empty($this->session->userdata('user')->token) ? "0" : $this->session->userdata('user')->token ; ?>" >
+
 <div class="wrapper">
 
   <!-- Navbar -->
