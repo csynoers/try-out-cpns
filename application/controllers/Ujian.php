@@ -333,7 +333,6 @@ class Ujian extends MY_Controller {
 		foreach ($this->session->userdata('user')->rows as $key => $value) {
 			$value->active = ($key==0) ? 'active' : NULL ;
 			$value->aria_selected = ($key==0) ? 'true' : false;
-
 			$li[] = "
 				<li class='nav-item'>
 					<a class='nav-link {$value->active}' id='nav{$value->exam_config_id}-tab' data-toggle='tab' href='#nav{$value->exam_config_id}' role='tab' aria-controls='nav{$value->exam_config_id}' aria-selected='{$value->aria_selected}'>{$value->title}</a>
@@ -350,8 +349,14 @@ class Ujian extends MY_Controller {
 			$value->tabQuestion = [];
 			foreach ($value->questions as $keyQuestion => $valueQuestion) {
 				$valueQuestion->active = ($keyQuestion==0) ? 'active' : NULL ;
+
+				$valueQuestionAnswered = NULL;
+				if ( $valueQuestion->question_status == 1 ) {
+					$valueQuestionAnswered = 'border border-info rounded';
+				}
+
 				$value->navQuestion[] = "
-						<li class='nav-item'>
+						<li class='nav-item m-1 {$valueQuestionAnswered}'>
 							<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$keyQuestion}tab-pill' data-toggle='pill'>$valueQuestion->no_soal</a>
 						</li>
 				";
