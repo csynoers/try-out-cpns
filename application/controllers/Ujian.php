@@ -352,12 +352,18 @@ class Ujian extends MY_Controller {
 				$valueQuestion->active = ($keyQuestion==0) ? 'active' : NULL ;
 				$value->navQuestion[] = "
 						<li class='nav-item'>
-							<a class='nav-link {$valueQuestion->active}' href='#nav{$valueQuestion->question_id}tab-pill' data-toggle='pill'>$valueQuestion->no_soal</a>
+							<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$keyQuestion}tab-pill' data-toggle='pill'>$valueQuestion->no_soal</a>
 						</li>
 				";
 
 				$valueQuestion->choices_html = [];
 				foreach ($valueQuestion->choices as $keyChoice => $valueChoice) {
+					$valueQuestion->checked = NULL;
+					if ( $valueQuestion->question_status == 1 ) {
+						if ( $valueQuestion->question_answer_key == $keyChoice ) {
+							$valueQuestion->checked = 'checked';
+						}
+					}
 					$valueQuestion->choices_html[] = "
 						<tr>
 							<td class='row'>
@@ -367,7 +373,7 @@ class Ujian extends MY_Controller {
 							<div class=''>
 								<div class='form-check'>
 									<label class='form-check-label'>
-										<input type='radio' class='form-check-input' name='optradio'>{$valueChoice->choice}
+										<input type='radio' class='form-check-input choices' name='choices[{$key}/{$keyQuestion}]' value='{$key}/{$keyQuestion}/{$keyChoice}' {$valueQuestion->checked}>{$valueChoice->choice}
 									</label>
 								</div>
 							</div>
@@ -377,9 +383,28 @@ class Ujian extends MY_Controller {
 					
 				}
 				$valueQuestion->choices_html = implode('',$valueQuestion->choices_html);
-
+				if ( $keyQuestion==0 ) {
+					$valueQuestion->submitNavigation = "
+					<ul class='nav nav-fill nav-pills' role='tablist'>
+						<li class='nav-item'>
+							<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$valueQuestion->no_soal}tab-pill' data-toggle='pill'>Lanjut</a>
+						</li>
+					</ul>
+					";
+				} else {
+					$valueQuestion->submitNavigation = "
+						<ul class='nav nav-fill nav-pills' role='tablist'>
+							<li class='nav-item'>
+								<a class='nav-link {$valueQuestion->active}' href='#nav{$key}".($keyQuestion-1)."tab-pill' data-toggle='pill'>Kembali</a>
+							</li>
+							<li class='nav-item'>
+								<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$valueQuestion->no_soal}tab-pill' data-toggle='pill'>Lanjut</a>
+							</li>
+						</ul>
+					";
+				}
 				$value->tabQuestion[] = "
-						<div id='nav{$valueQuestion->question_id}tab-pill' class='container tab-pane {$valueQuestion->active}'>
+						<div id='nav{$key}{$keyQuestion}tab-pill' class='container tab-pane {$valueQuestion->active}'>
 							<hr>
 							<label class='font-weight-normal text-muted'>
 								Soal ke <b>{$valueQuestion->no_soal}</b> dari <b>{$value->number_of_questions}</b>
@@ -403,6 +428,7 @@ class Ujian extends MY_Controller {
 									</div>
 								</div>
 							</div>
+							{$valueQuestion->submitNavigation}
 						</div>
 				";
 			}
@@ -464,4 +490,22 @@ class Ujian extends MY_Controller {
 		// $this->debugs( $this->M_exam_configs->proses_sql_rand($token,$kategori) );
 	}
 	/* ==================== END : PROSES UJIAN ==================== */
+
+	public function update_session(){
+		$data['question_status'] = 1;
+		$data['question_weight'] = $_SESSION['user']->rows[$this->uri->segment(3)]->questions[$this->uri->segment(4)]->choices[$this->uri->segment(5)]->weight;
+		$data['question_answer_key'] = $this->uri->segment(5);
+
+		# update questions sessions = question_status
+		$_SESSION['user']->rows[$this->uri->segment(3)]->questions[$this->uri->segment(4)]->question_status = $data['question_status'];
+
+		# update questions sessions = question_weight
+		$_SESSION['user']->rows[$this->uri->segment(3)]->questions[$this->uri->segment(4)]->question_weight = $data['question_weight'];
+
+		# update questions sessions = question_answer_key
+		$_SESSION['user']->rows[$this->uri->segment(3)]->questions[$this->uri->segment(4)]->question_answer_key = $data['question_answer_key'];
+
+		// print_r($data);
+		print_r($_SESSION);
+	}
 }

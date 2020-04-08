@@ -195,6 +195,7 @@ function getTanggalIndoSekarang()
       $('#examLimit').text( getTimeDiff($('#countDown').data('end'),$('#countDown').data('start')).label );
       updateCountDown($('#countDown').data('end'));  
       $( '#myModal' ).modal( 'show' );
+      choicesSelected();
     },'html');
   }
   function updateCountDown(datetime)
@@ -210,11 +211,23 @@ function getTanggalIndoSekarang()
       //   document.getElementById("demo").innerHTML = "EXPIRED";
       }
       $('body').removeAttr('data-exam').removeAttr('data-token');
-      console.log( limitDown )
+      // console.log( limitDown )
     }, 1000)
     
   } 
   /* ==================== END : CHECK EXAM PROCESS ==================== */
+
+  /* ==================== START : CHOICES SELECTED ==================== */
+  function choicesSelected() {
+    $('.choices').on('click',function(){
+      let data = {
+        "href" : "<?= base_url('ujian/update-session') ?>",
+        "value" : $( this ).val()
+      };
+      $.get(`${data.href}/${data.value}`)
+    })
+  }
+  /* ==================== END : CHOICES SELECTED ==================== */
   
 </script>
 </body>
