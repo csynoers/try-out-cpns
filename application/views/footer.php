@@ -199,13 +199,18 @@ function getTanggalIndoSekarang()
   }
   function updateCountDown(datetime)
   {
-    setInterval(function() {
+    let x = setInterval(function() {
       $('#countDown').text( getTimeDiff( datetime ).label )
+
       // If the count down is over, write some text 
-      // if (distance < 0) {
-      //   clearInterval(x);
+      let limitDown = Math.floor(getTimeDiff( datetime ).distance );
+      if ( limitDown == 0 ) {
+        clearInterval(x);
+        alert('Maaf Waktu Anda Habis')
       //   document.getElementById("demo").innerHTML = "EXPIRED";
-      // }
+      }
+      $('body').removeAttr('data-exam').removeAttr('data-token');
+      console.log( limitDown )
     }, 1000)
     
   } 
