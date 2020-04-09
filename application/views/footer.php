@@ -124,6 +124,7 @@ function getTanggalIndoSekarang()
 
     return {
       "distance" : diffMs,
+      "minutes" : minutes,
       "label" : `${hours} Jam, ${minutes} Menit ${seconds} Detik`
     };
   }
@@ -174,12 +175,14 @@ function getTanggalIndoSekarang()
   /* ==================== END : PROCESS DATA STORE ==================== */
 
   /* ==================== START : CHECK EXAM PROCESS ==================== */
-  if ( $('body').data('exam')=='1' ) {
+  if ( $('body').attr('data-exam')=='1' ) {
     loadTryOutWithSession();
 
     /* triger on modal close */
     $("#myModal").on('hidden.bs.modal', function(){
-      loadTryOutWithSession();
+      if ( $('body').attr('data-exam')!= '0' ) {
+        loadTryOutWithSession();
+      }
     });
   }
   function loadTryOutWithSession() {
@@ -196,6 +199,7 @@ function getTanggalIndoSekarang()
       updateCountDown($('#countDown').data('end'));  
       $( '#myModal' ).modal( 'show' );
       choicesSelected();
+      navQuestion();
     },'html');
   }
   function updateCountDown(datetime)
@@ -204,14 +208,17 @@ function getTanggalIndoSekarang()
       $('#countDown').text( getTimeDiff( datetime ).label )
 
       // If the count down is over, write some text 
-      let limitDown = Math.floor(getTimeDiff( datetime ).distance );
-      if ( limitDown == 0 ) {
+      // let limitDown = Math.floor(getTimeDiff( datetime ) );
+      let limitDown = getTimeDiff( datetime ).minutes;
+      // console.log(limitDown)
+      if ( limitDown < 0 ) {
         clearInterval(x);
         alert('Maaf Waktu Anda Habis')
-      //   document.getElementById("demo").innerHTML = "EXPIRED";
+        // document.getElementById("demo").innerHTML = "EXPIRED";
+        $('body').attr('data-exam',0).attr('data-token',0);
+
       }
-      $('body').removeAttr('data-exam').removeAttr('data-token');
-      // console.log( limitDown )
+      // $('body').removeAttr('data-exam').removeAttr('data-token');
     }, 1000)
     
   } 
@@ -228,7 +235,34 @@ function getTanggalIndoSekarang()
     })
   }
   /* ==================== END : CHOICES SELECTED ==================== */
-  
+  function navQuestion() {
+    $( document ).on('click','.nav-question',function(e){
+      e.preventDefault()
+      let data = {
+        "href" : $( this ).attr('href'),
+        "closest" : $( this ).data('closest')
+      };
+      console.log(data.href);
+      let wrap = $( this ).closest(`#${data.closest}`);
+      wrap.find( '.nav-questions' ).removeClass('active show');
+
+      $.each(wrap.find( '.nav-questions' ),function(){
+        if ( $( this ).attr( 'href' )==data.href ) {
+          $( this ).addClass('active show')
+        }
+      })
+      
+
+      wrap.find( '.tab-questions' ).removeClass('active show');
+      wrap.find( data.href ).addClass('active show');
+      // $.each(wrap.find( '.tab-questions' ),function(){
+      // //   if ( $( this ).attr( 'id' )==data.href ) {
+      // //     $( this ).addClass('active show')
+      // //   }
+      //   console.log(this)
+      // })
+    })
+  }
 </script>
 </body>
 

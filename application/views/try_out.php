@@ -132,7 +132,7 @@
     if ( token ) {
       if ( $('#token').val()==token ) {
         loadTryOut( token );
-        
+
         /* triger on modal close */
         $("#myModal").on('hidden.bs.modal', function(){
           loadTryOut( token );
@@ -154,7 +154,9 @@
       $( '#myModal .modal-title' ).html( data.title );
       $( '#myModal .modal-body' ).html( d );
       $( '#myModal .modal-dialog' ).addClass( 'modal-lg' );
+      updateCountDown($('#countDown').data('end'));  
       $( '#myModal' ).modal( 'show' );
+      choicesSelected();
     },'html');
   }
 </script>

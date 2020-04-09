@@ -325,14 +325,36 @@ class Ujian extends MY_Controller {
 			$_SESSION['user']->token = $token;
 			$_SESSION['user']->exam_start = date('Y-m-d H:i:s');
 			$_SESSION['user']->exam_end = date('Y-m-d H:i:s',strtotime("+{$_SESSION['user']->exam_limit_total} minutes", strtotime($_SESSION['user']->exam_start)));
+			$_SESSION['user']->last_do_work = 0;
 		}
 		// $this->debugs($_SESSION);
 		// die();
 
 		$li = [];
 		foreach ($this->session->userdata('user')->rows as $key => $value) {
-			$value->active = ($key==0) ? 'active' : NULL ;
-			$value->aria_selected = ($key==0) ? 'true' : false;
+			# default $value->active is null
+			$value->active = NULL;
+
+			# default $value->aria_selected is false
+			$value->aria_selected = false;
+
+			if ( $this->session->userdata('user')->last_do_work != '0' ) {
+				# get last do work question
+				$key_last_do_work = explode('/',$this->session->userdata('user')->last_do_work);
+
+				if ( $key_last_do_work[0]==$key ) {
+					$value->active = 'active' ;
+					$value->aria_selected = 'true';
+				}
+
+			} elseif ( $key==0 ) {
+				$value->active = 'active' ;
+				$value->aria_selected = 'true';
+			}
+
+			# dont remove this for debug activ tab category question
+			// echo "nav tab {$key}/{$value->active}<br>";
+
 			$li[] = "
 				<li class='nav-item'>
 					<a class='nav-link {$value->active}' id='nav{$value->exam_config_id}-tab' data-toggle='tab' href='#nav{$value->exam_config_id}' role='tab' aria-controls='nav{$value->exam_config_id}' aria-selected='{$value->aria_selected}'>{$value->title}</a>
@@ -343,12 +365,46 @@ class Ujian extends MY_Controller {
 		
 		$tab = [];
 		foreach ($this->session->userdata('user')->rows as $key => $value) {
-			$value->active = ($key==0) ? 'show active' : NULL ;
+			# default $value->active is null			
+			$value->active = NULL ;
 
+			if ( $this->session->userdata('user')->last_do_work != '0' ) {
+				# get last do work question
+				$key_last_do_work = explode('/',$this->session->userdata('user')->last_do_work);
+
+				if ( $key_last_do_work[0]==$key ) {
+					$value->active = 'show active' ;
+				}
+
+			} elseif ( $key==0 ) {
+				$value->active = 'show active' ;
+			}
+
+			# dont remove this for debug activ tab category question
+			// echo "tab-pane {$key}/{$value->active}<br>";
+
+			// $value->active = ($key==0) ? 'show active' : NULL ;
 			$value->navQuestion = [];
 			$value->tabQuestion = [];
 			foreach ($value->questions as $keyQuestion => $valueQuestion) {
-				$valueQuestion->active = ($keyQuestion==0) ? 'active' : NULL ;
+				# default $valueQuestion->active is null
+				$valueQuestion->active = NULL;
+				
+				if ( $this->session->userdata('user')->last_do_work != '0' ) {
+					# get last do work question
+					$key_last_do_work = explode('/',$this->session->userdata('user')->last_do_work);
+					if ( ($key==$key_last_do_work[0]) && ($keyQuestion==$key_last_do_work[1]) ) {
+						$valueQuestion->active = 'active show';
+					} elseif ( $key!=$key_last_do_work[0] ) {
+						$valueQuestion->active = ($keyQuestion==0) ? 'active show' : NULL;
+					}
+					
+				} elseif ( $keyQuestion==0 ) {
+					$valueQuestion->active = 'active show';
+				}
+
+				# dont remove this for debug activ question
+				// echo "no {$valueQuestion->no_soal}/{$valueQuestion->active}<br>";
 
 				$valueQuestionAnswered = NULL;
 				if ( $valueQuestion->question_status == 1 ) {
@@ -357,7 +413,7 @@ class Ujian extends MY_Controller {
 
 				$value->navQuestion[] = "
 						<li class='nav-item m-1 {$valueQuestionAnswered}'>
-							<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$keyQuestion}tab-pill' data-toggle='pill'>$valueQuestion->no_soal</a>
+							<a class='nav-questions nav-link {$valueQuestion->active}' href='#nav{$key}{$keyQuestion}tab-pill' data-toggle='pill'>{$valueQuestion->no_soal}</a>
 						</li>
 				";
 
@@ -390,26 +446,33 @@ class Ujian extends MY_Controller {
 				$valueQuestion->choices_html = implode('',$valueQuestion->choices_html);
 				if ( $keyQuestion==0 ) {
 					$valueQuestion->submitNavigation = "
-					<ul class='nav nav-fill nav-pills' role='tablist'>
-						<li class='nav-item'>
-							<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$valueQuestion->no_soal}tab-pill' data-toggle='pill'>Lanjut</a>
+					<ul class='d-block nav'>
+						<li class='border float-right nav-item text-center w-50 border-primary'>
+							<a class='nav-link nav-question' href='#nav{$key}{$valueQuestion->no_soal}tab-pill' data-closest='nav{$value->exam_config_id}'>Lanjut</a>
 						</li>
 					</ul>
 					";
+				} elseif ( $keyQuestion==($value->number_of_questions_mod-1) ) {
+					$valueQuestion->submitNavigation = "
+						<ul class='nav row'>
+							<li class='nav-item col-6 text-center'>
+								<a class='nav-question nav-link border border-warning' href='#nav{$key}".($keyQuestion-1)."tab-pill' data-closest='nav{$value->exam_config_id}'>Kembali</a>
+							</li>
+					";
 				} else {
 					$valueQuestion->submitNavigation = "
-						<ul class='nav nav-fill nav-pills' role='tablist'>
-							<li class='nav-item'>
-								<a class='nav-link {$valueQuestion->active}' href='#nav{$key}".($keyQuestion-1)."tab-pill' data-toggle='pill'>Kembali</a>
+						<ul class='nav row'>
+							<li class='nav-item col-6 text-center'>
+								<a class='nav-question nav-link border border-warning' href='#nav{$key}".($keyQuestion-1)."tab-pill' data-closest='nav{$value->exam_config_id}'>Kembali</a>
 							</li>
-							<li class='nav-item'>
-								<a class='nav-link {$valueQuestion->active}' href='#nav{$key}{$valueQuestion->no_soal}tab-pill' data-toggle='pill'>Lanjut</a>
+							<li class='nav-item col-6 text-center'>
+								<a class='nav-question nav-link border border-primary' href='#nav{$key}{$valueQuestion->no_soal}tab-pill' data-closest='nav{$value->exam_config_id}'>Lanjut</a>
 							</li>
 						</ul>
 					";
 				}
 				$value->tabQuestion[] = "
-						<div id='nav{$key}{$keyQuestion}tab-pill' class='container tab-pane {$valueQuestion->active}'>
+						<div id='nav{$key}{$keyQuestion}tab-pill' class='container tab-pane tab-questions {$valueQuestion->active}'>
 							<hr>
 							<label class='font-weight-normal text-muted'>
 								Soal ke <b>{$valueQuestion->no_soal}</b> dari <b>{$value->number_of_questions}</b>
@@ -484,6 +547,12 @@ class Ujian extends MY_Controller {
 						<td>Sisa Waktu</td>
 						<td><span id='countDown' data-start='".$this->session->userdata('user')->exam_start."' data-end='".$this->session->userdata('user')->exam_end."'>0</span></td>
 					</tr>
+					<tr>
+						<td colspan='2'>
+							! Info<br>
+							Hasil ujian akan langsung keluar setelah waktu habis  
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			{$data['navtab']}
@@ -510,7 +579,11 @@ class Ujian extends MY_Controller {
 		# update questions sessions = question_answer_key
 		$_SESSION['user']->rows[$this->uri->segment(3)]->questions[$this->uri->segment(4)]->question_answer_key = $data['question_answer_key'];
 
+		# update session last do work question
+		$_SESSION['user']->last_do_work = $this->uri->segment(3).'/'.$this->uri->segment(4);
+
 		// print_r($data);
-		print_r($_SESSION);
+		// print_r($_SESSION);
+		$this->debugs($this->session);
 	}
 }
