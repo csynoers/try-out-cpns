@@ -85,15 +85,15 @@
               echo '
                 <li class="nav-item ">
                   <a href="'.base_url('ujian').'" class="nav-link '.($this->uri->segment(1)=='ujian' ? 'active' : NULL).'">
-                    <i class="nav-icon fa fa-sign-out"></i>
+                    <i class="nav-icon fa fa-calendar-plus-o"></i>
                     <p>
                       Try Out
                     </p>
                   </a>
                 </li>
                 <li class="nav-item ">
-                  <a href="'.base_url().'" class="nav-link">
-                    <i class="nav-icon fa fa-sign-out"></i>
+                  <a href="'.base_url('hasil').'" class="nav-link '.($this->uri->segment(1)=='hasil' ? 'active' : NULL).'">
+                    <i class="nav-icon fa fa-calendar-check-o"></i>
                     <p>
                       Hasil Try Out
                     </p>

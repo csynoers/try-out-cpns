@@ -15,6 +15,11 @@
         protected $question_assessment;
         protected $exam_limit;
 
+        public function get( $id)
+        {
+            $this->db->where( 'answers_detail.answer_id', $id );
+            return $this->db->get($this->table)->result_object();
+        }
         public function store()
         {
             $data = $this->post;
