@@ -157,6 +157,7 @@
       updateCountDown($('#countDown').data('end'));  
       $( '#myModal' ).modal( 'show' );
       choicesSelected();
+      navQuestion();
     },'html');
   }
 </script>

@@ -306,7 +306,7 @@ class Ujian extends MY_Controller {
 					 * 1 = answered
 					 */
 					$valueQuestion->no_soal = $keyQuestion+1;
-					$valueQuestion->rules_answer = ($value->true_question=='same' ? 'Jika jawaban salah nilainya 0 dan benar 5' : 'Nilai setiap jawaban berbeda 1-5' );
+					$valueQuestion->rules_answer = ($value->true_question=='same' ? 'Poin 5' : 'Poin 1-5' );
 					$valueQuestion->question_status = 0;
 					$valueQuestion->question_weight = 0;
 					$valueQuestion->question_answer_key = 0;
@@ -586,4 +586,210 @@ class Ujian extends MY_Controller {
 		// print_r($_SESSION);
 		$this->debugs($this->session);
 	}
+	/* ==================== START : EXAM STORE PROCESS ==================== */
+	public function session_store(){
+		$data['point'] = 0;
+		$data['point_total'] = $this->session->userdata('user')->count_of_question_total*5;
+
+		$data['answers'] = array(
+			'username' => $this->session->userdata('user')->username,
+			'question_title' => $this->session->userdata('user')->count_of_question_total,
+			'total_questions' => $this->session->userdata('user')->count_of_question_total,
+			'limit_passing_grade' => 0,
+			'passing_grade' => 0,
+			'correct_answer' => 0,
+			'wrong_answer' => 0,
+			'not_answered' => 0,
+			'exam_limit' => $this->session->userdata('user')->exam_limit_total,
+			'create_at' => date('Y-m-d H:i:s'),
+		);
+		$answer_id = 0;
+
+		# generate data insert batch in table answers_detail
+		foreach ($this->session->userdata('user')->rows as $keyCategory => $valueCategory) {
+			if ( $valueCategory->exam_config_id==1 ) {
+				$valueCategory->limit_passing_grade = 45.71;
+			} elseif ( $valueCategory->exam_config_id==2 ) {
+				$valueCategory->limit_passing_grade = 43.33;
+			} elseif ( $valueCategory->exam_config_id==3 ) {
+				$valueCategory->limit_passing_grade = 74.29;
+			}
+			
+			# set default variable is zero(0)
+			$valueCategory->correct_answer = 0;
+			$valueCategory->wrong_answer = 0;
+			$valueCategory->not_answered = 0;
+			$valueCategory->passing_grade = 0;
+			$valueCategory->point_total = ($valueCategory->number_of_questions*5);
+			$valueCategory->point = 0;
+			$valueCategory->passing_grade_result = 0;
+
+			foreach ($valueCategory->questions as $keyQuestion => $valueQuestion) {
+				switch ($valueQuestion->question_status) {
+					case '0':
+						# value is zero = question not answered
+						$valueCategory->not_answered += 1;
+						break;
+
+					case '1':
+						# value is 1(one) = question answered filter again correct answer OR wrong answer
+						if ( $valueQuestion->question_weight==0 ) {
+							$valueCategory->wrong_answer += 1;
+						} else {
+							$valueCategory->correct_answer += 1;
+						}
+						break;
+					
+					default:
+						# code...
+						break;
+				}
+				$valueCategory->point += $valueQuestion->question_weight;
+			}
+
+			# get result passing grade
+			$valueCategory->passing_grade = ($valueCategory->point*100)/$valueCategory->point_total;
+
+			# re-set data answer : correct_answer,wrong_answer,not_answered
+			$data['answers']['correct_answer'] += $valueCategory->correct_answer;
+			$data['answers']['wrong_answer'] += $valueCategory->wrong_answer;
+			$data['answers']['not_answered'] += $valueCategory->not_answered;
+			$data['point'] += $valueCategory->point;
+
+			$data['answers_detail'][] = array(
+				'answer_id' => $answer_id,
+				'category' => $valueCategory->title,
+				'correct_answer' => $valueCategory->correct_answer,
+				'wrong_answer' => $valueCategory->wrong_answer,
+				'not_answered' => $valueCategory->not_answered,
+				'total_questions' => $valueCategory->number_of_questions,
+				'limit_passing_grade' => $valueCategory->limit_passing_grade,
+				'passing_grade' => $valueCategory->passing_grade,
+				'question_assessment' => $valueCategory->true_question,
+				'exam_limit' => $valueCategory->count_of_choices,
+			);
+		}
+
+		# re-set data answer : passing_grade
+		$data['answers']['passing_grade'] += ($data['point']*100)/$data['point_total'];
+
+		# load model just for this session
+		$this->load->model(['M_configs','M_answers','M_answers_detail']);
+
+		# get limit_passing_grade
+		$data['answers']['limit_passing_grade'] += $this->M_configs->get( $id=1 )->text;
+
+		# get question_title
+		$data['answers']['question_title'] = 'Try Out CAT ke-' . ( $this->M_answers->rows_by_username( $username=$this->session->userdata('user')->username)+1 );
+
+		# send data to Model 
+		$this->M_answers->post = $data['answers'];
+
+		# store process return last insert id table : answers
+		$answer_id = $this->M_answers->store();
+
+		# set field answer_id in data['answers_detail']
+		foreach ($data['answers_detail'] as $key => $value) {
+			$data['answers_detail'][$key]['answer_id'] = $answer_id;
+		}
+
+		# send data to Model 
+		$this->M_answers_detail->post = $data['answers_detail'];
+
+		# store process table : answers_detail
+		$this->M_answers_detail->store();
+
+		# reset session
+		$_SESSION['user']->examination_process = FALSE;
+		$_SESSION['user']->rows = NULL;
+
+		$table_hasil = [];
+		$hasil_kategori = [];
+		$passing_grade = [];
+		foreach ($data['answers_detail'] as $key => $value) {
+			$hasil_kategori[] = "
+				<tr>
+					<td class='w-50'>{$value['category']}</td>
+					<td>{$value['passing_grade']} %</td>
+				</tr>
+			";
+			$passing_grade[] = "* {$value['category']} {$value['limit_passing_grade']} %<br>";
+
+			$table_hasil[] = "
+				<tr>
+					<td>{$value['category']}</td>
+					<td>{$value['total_questions']}</td>
+					<td>{$value['correct_answer']} Soal</td>
+					<td>{$value['wrong_answer']} Soal</td>
+					<td>{$value['not_answered']} Soal</td>
+				</tr>
+			";
+		}
+		$hasil_kategori = implode('',$hasil_kategori);
+		$passing_grade[] = "* SKD {$data['answers']['limit_passing_grade']}%";
+		$passing_grade = implode('',$passing_grade);
+		$table_hasil = implode('',$table_hasil);
+
+		$keterangan = ($data['answers']['passing_grade'] <= $data['answers']['limit_passing_grade']) ? '<h2 class="text-danger">Sayang sekali, Kamu Belum Lulus Passing Grade SKD di percobaan kali ini, silahkan coba lagi</h2>' : '<h2 class="text-primary">Selamat, Kamu Lulus Passing Grade SKD di percobaan kali ini</h2>' ;
+		echo "
+			<table class='table table-bordered font-weight-normal'>
+				<tbody>
+					<tr>
+						<td class='w-50'>Title</td>
+						<td>{$data['answers']['question_title']}</td>
+					</tr>
+					<tr>
+						<td>Total Soal</td>
+						<td>{$data['answers']['total_questions']} Soal</td>
+					</tr>
+					<tr>
+						<td>Batas Waktu Pengerjaan</td>
+						<td>{$data['answers']['exam_limit']} Menit</td>
+					</tr>
+					<tr>
+						<td colspan='2' class='font-italic font-weight-bold p-5 text-center'>
+							Anda mendapatkan ".( ($data['answers']['passing_grade']*($data['answers']['total_questions']*5))/100 )." poin dari total ".($data['answers']['total_questions']*5)." poin, ({$data['answers']['passing_grade']}%)
+						</td>
+					</tr>
+					<tr>
+						<td colspan='2' class='font-weight-bold'>Kategori : </td>
+					</tr>
+					{$hasil_kategori}
+					<tr>
+						<td colspan='2' class='font-weight-bold p-5 text-center'>
+							{$keterangan}
+						</td>
+					</tr>
+					<tr>
+						<td colspan='2'>
+							<b>Passing Grade</b><br>
+							Nilai kelulusan Passing Grade SKD , minimal jika:<br>
+							{$passing_grade}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<!--<hr>
+			<table class='table table-bordered font-weight-normal'>
+				<thead>
+					<tr>
+						<th>Kategori</th>
+						<th>Jumlah Soal</th>
+						<th>Jawaban Benar</th>
+						<th>Jawaban Salah</th>
+						<th>Tidak Dikerjakan</th>
+					</tr>
+				</thead>
+				<tbody>
+					{$table_hasil}
+				</tbody>
+			</table>-->
+		";
+
+		// $_SESSION['user']->examination_process
+		// $this->debugs($data);
+		// $this->debugs($this->session);
+		// $this->debugs($this->session->userdata('user')->rows);
+	}
+	/* ==================== END : EXAM STORE PROCESS ==================== */
 }

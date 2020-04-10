@@ -114,7 +114,7 @@
           </li>
           <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'hasil-penilaian') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
-              <i class="nav-icon fa fa-clipboard"></i>
+              <i class="nav-icon fa fa-calendar-check-o"></i>
               <p>
                 Hasil Penilaian
                 <i class="right fa fa-angle-left"></i>

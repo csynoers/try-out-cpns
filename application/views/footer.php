@@ -214,11 +214,19 @@ function getTanggalIndoSekarang()
       if ( limitDown < 0 ) {
         clearInterval(x);
         alert('Maaf Waktu Anda Habis')
-        // document.getElementById("demo").innerHTML = "EXPIRED";
+
+        /* ==================== START : EXAM STORE PROCESS  ==================== */
+        $.get("<?= base_url('ujian/session-store') ?>",function( d ){
+          $( '#myModal .modal-title' ).html( 'Hasil Try Out' );
+          $( '#myModal .modal-body' ).html( d );
+          $( '#myModal .modal-dialog' ).addClass( 'modal-lg' );
+          $( '#myModal' ).modal( 'show' );
+        },'html');
+        /* ==================== END : EXAM STORE PROCESS  ==================== */
         $('body').attr('data-exam',0).attr('data-token',0);
 
       }
-      // $('body').removeAttr('data-exam').removeAttr('data-token');
+      
     }, 1000)
     
   } 
