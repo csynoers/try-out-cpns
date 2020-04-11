@@ -1,5 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class Ujian extends MY_Controller {
 
@@ -33,7 +35,14 @@ class Ujian extends MY_Controller {
 		}
 		
 		# load model
-		$this->load->model(['M_exam_configs','M_banks','M_exam_user_configs']);
+		$this->load->model(['M_exam_configs','M_banks','M_exam_user_configs','M_users']);
+
+		$this->load->helper('rupiah_helper');
+
+		# require php mailer
+        require APPPATH.'libraries/phpmailer/src/Exception.php';
+        require APPPATH.'libraries/phpmailer/src/PHPMailer.php';
+		require APPPATH.'libraries/phpmailer/src/SMTP.php';
 	}
 
 	public function index()
@@ -55,6 +64,7 @@ class Ujian extends MY_Controller {
 					'href' => base_url("ujian/get-token/{$row_user_configs->exam_user_config_id}"),
 					'title' => 'Konfirmasi Pembayaran',
 					'label' => 'Konfirmasi Pembayaran',
+					'info' => NULL,
 				);
 			}
 
@@ -192,6 +202,69 @@ class Ujian extends MY_Controller {
                 /* end image resize */
 
                 if ( $this->M_exam_user_configs->store( $this->uri->segment(3) ) ) {
+					/* send to admin email */
+					$admin = $this->M_users->get_admin();
+					$user_config = $this->M_exam_user_configs->get( $this->session->userdata('user')->username );
+					$user_config->imageSrc = base_url('src/proof_payments/'.$user_config->proof_payment);
+					$html = "
+						<html>
+							<head>
+								<title>Try Out CPNS</title>
+							</head>
+							<body style='background: #eee;'>
+								<div style='padding: 50px;'>
+									<div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 15px 15px 0px 0px;'>
+										<h1>Try Out CAT CPNS</h1>
+									</div>
+									<div style='background: #fff;padding: 30px 30px;'>
+										<h2 style='margin-top: 0px'>Hi {$admin->fullname},</h2>
+										Silahkan melakukan konfirmasi pembayaran segera, User ini telah melakukan pembayaran untuk mendapatkan token :
+										<table style='width: 100%;border-spacing: unset;'>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>NIK </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->nik." </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Nama Lengkap </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->fullname." </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Username </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->username." </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Email </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'> <a href='mailto:".$this->session->userdata('user')->email."' target='_blank'>".$this->session->userdata('user')->email."</a> </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Telepon </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->telp." </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Bank Transfer </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'> {$user_config->bank_transfer} </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Nominal Transfer </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'>Rp. ".rupiah($this->session->userdata('user')->nominal_transfer)." </td>
+											</tr>
+											<tr>
+												<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Bukti Transfer </td>
+												<td style='padding: 10px 10px;border: 1px solid #ddd;'>
+													<img src='{$user_config->imageSrc}' title='Bukti Transfer'>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 0px 0px 15px 15px;'>
+										<p><a href='".base_url()."' target='_blank' style='color: wheat;font-weight: bold;'>Try Out CAT CPNS Bimbel IC Surabaya © ".date('Y')."</a><br> Pusat Operasional : Jl. Mulyosari Mas C3 No 19 Surabaya</p>
+									</div>
+								</div>
+							</body>
+						</html>	
+					";
+					$this->send_email_smtp('Konfirmasi Pembayaran',$admin->email,$html);
+
                     $this->msg= [
                         'stats'=>1,
                         'msg'=> 'Bukti pembayaran berhasil dikirim',
@@ -234,7 +307,6 @@ class Ujian extends MY_Controller {
 	public function detail_pembayaran()
 	{
 		# code...
-		$this->load->helper('rupiah_helper');
 		$row_user_configs = $this->M_exam_user_configs->get( $this->session->userdata('user')->username );
 
 		$data['action']   		= base_url();		
@@ -792,4 +864,57 @@ class Ujian extends MY_Controller {
 		// $this->debugs($this->session->userdata('user')->rows);
 	}
 	/* ==================== END : EXAM STORE PROCESS ==================== */
+
+	protected function send_email_smtp($subject,$to,$html)
+    {
+        /* ==================== START :: SEND EMAIL ==================== */
+
+        // PHPMailer object
+        $response = false;
+        $mail = new PHPMailer();                     
+            
+        // SMTP configuration
+        $mail->isSMTP();
+
+        //Enable SMTP debugging
+        // 0 = off (for production use)
+        // 1 = client messages
+        // 2 = client and server messages
+        $mail->SMTPDebug = 0;
+
+        $mail->Host     = 'smtp.gmail.com'; //sesuaikan sesuai nama domain hosting/server yang digunakan
+        $mail->SMTPAuth = true;
+        $mail->Username = 'jogjasitesinur@gmail.com'; // user email
+        $mail->Password = 'Sinur12345'; // password email
+        $mail->SMTPSecure = 'tls';
+        $mail->Port     = 587; // GMail - 465/587/995/993
+
+        $mail->setFrom('pinsus2017surabaya@gmail.com', 'Try Out CAT CPNS'); // user email
+        $mail->addReplyTo('pinsus2017surabaya@gmail.com', ''); //user email
+
+        // Add a recipient
+        $mail->addAddress($to); //email tujuan pengiriman email
+
+        // Email subject
+        $mail->Subject = $subject; //subject email
+
+        // Set email format to HTML
+        $mail->isHTML(true);
+
+        // Email body content
+        $mailContent = $html; // isi email
+        $mail->Body = $mailContent;
+
+        // Send email
+        if(!$mail->send()){
+            // echo 'Message could not be sent.';
+            // echo 'Mailer Error: ' . $mail->ErrorInfo;
+            $response = FALSE;
+        }else{
+            // echo 'Message has been sent';
+            $response = TRUE;
+        }
+        /* ==================== END :: SEND EMAIL ==================== */
+        return $response;
+    }
 }

@@ -30,6 +30,13 @@ class M_users extends CI_Model{
 
         return $this->db->get($this->table)->row();
     }
+    public function get_admin()
+    {
+        $this->db->where( 'users.level', 'root' );
+        $this->db->join( $this->tableUsersDetail, $this->tableUsersDetailRelation , 'left' );
+
+        return $this->db->get($this->table)->row();
+    }
     public function store( $username )
     {
         $this->password = $this->post['password'];

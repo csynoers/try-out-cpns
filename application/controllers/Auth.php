@@ -11,6 +11,7 @@ class Auth extends MY_Controller{
          * 1. M_auth (get data from users table)
          */		
         $this->load->model('M_auth');
+        $this->load->model('M_configs');
 
         # load encrypt library
         $this->load->library('encryption');
@@ -90,7 +91,7 @@ class Auth extends MY_Controller{
                             <div style='background: #fff;padding: 30px 30px;'>
                                 <h2 style='margin-top: 0px'>Hi {$post['fullname']},</h2>
                                 <p>Username Try Out kamu adalah : {$post['nik']} / {$post['username']} / <a href='mailto:{$post['email']}' target='_blank'>{$post['email']}</a> / {$post['telp']} (pilih salah satu saja)</p>
-                                <a href='".base_url('email-confirmation?token='. $this->encryption->encrypt($post['email']))."' target='_blank' style='background-color: #39a300;color: #fff;padding: 10px 12px;text-decoration: none;'>Klik disini untuk melakukan konfirmasi email</a>
+                                <a href='".base_url('email-confirmation?token='. $this->encryption->encrypt($post['username']))."' target='_blank' style='background-color: #39a300;color: #fff;padding: 10px 12px;text-decoration: none;'>Klik disini untuk melakukan konfirmasi email</a>
                             </div>
                             <div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 0px 0px 15px 15px;'>
                                 <p><a href='".base_url()."' target='_blank' style='color: wheat;font-weight: bold;'>Try Out CAT CPNS Bimbel IC Surabaya © ".date('Y')."</a><br> Pusat Operasional : Jl. Mulyosari Mas C3 No 19 Surabaya</p>
@@ -102,6 +103,29 @@ class Auth extends MY_Controller{
 
             $this->send_email_smtp('Konfirmasi email ',$post['email'],$data['pesan']);
             echo ("<script>window.alert('Terimakasih telah mendaftar, data berhasil dikirim. Silahkan buka email anda dan klik tautan yang kami kirimkan');window.location.href='".base_url()."';</script>");
+        }
+        
+    }
+
+    public function email_confirmation()
+    {
+        if ( $this->input->get('token') ) {
+            # code...
+            // echo $this->encryption->encrypt( 'userdua' );
+            $post = array(
+                'username' => $this->encryption->decrypt( $this->input->get('token') ),
+            );
+            
+            // # send to model
+            $this->M_auth->post = $post;
+    
+            if ( $this->M_auth->update_last_login($post['username']) ) {
+                echo ("<script>window.alert('Selamat konfirmasi email berhasil, silahkan melakukan login untuk memastikan apakah konfirmasi berhasil');window.location.href='".base_url('auth')."';</script>");
+            } else {
+                echo ("<script>window.alert('Maaf! konfirmasi email gagal dilakukan');window.location.href='".base_url()."';</script>");
+            };
+        } else {
+            redirect( base_url() );
         }
         
     }
@@ -141,7 +165,13 @@ class Auth extends MY_Controller{
                         $this->M_auth->update_last_login( $row->username );
                         $row  = $this->M_auth->check_already_exist()->row();
     
-                        $row->nominal_transfer = 100000+rand ( 1 , 999 );
+                        $row->nominal_transfer = rand ( 1 , 999 );
+
+                        # get nominal transfers
+                        $nominal_configs = $this->M_configs->get(2)->text;
+
+                        $row->nominal_transfer += $nominal_configs;
+                        
                         $this->session->set_userdata([ "{$row->level}" => $row ]);
                         redirect( base_url() );
                     } else {
