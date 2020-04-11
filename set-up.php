@@ -77,10 +77,10 @@ class import_db
 // config import
 $import = new import_db([
     'host'=> 'localhost',
-    'user'=> 'root',
-    'pass'=> '',
-    'dbname'=> 'prio_ta',
-    'sqldump'=> 'sql_dump/prio_ta.sql', 
+    'user'=> 'jogjaval_5c3',
+    'pass'=> '3.s.0.c.9.m.7',
+    'dbname'=> 'jogjaval_5c3-tryout',
+    'sqldump'=> 'sql_dump/jogjaval_5c3-tryout.sql', 
 ]);
 
 echo "<pre>";
