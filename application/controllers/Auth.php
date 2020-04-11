@@ -223,9 +223,11 @@ class Auth extends MY_Controller{
     
             // More headers
             $data['mail']['dari'] .= 'From: <support@locdownstore.com>' . "\r\n";
-            mail($data['mail']['email'],$data['mail']['subjek'],$data['mail']['pesan'],$data['mail']['dari']);
+            // mail($data['mail']['email'],$data['mail']['subjek'],$data['mail']['pesan'],$data['mail']['dari']);
             /* ==================== END :: SEND EMAIL ==================== */
             echo $data['mail']['pesan'];
+            
+            $this->debugs($data['mail']);
         } else {
             $this->session->set_flashdata('msg', 'Maaf! User dengan Email: '.$post['email'].' tidak ditemukan');
             redirect(base_url('forget-password'));
