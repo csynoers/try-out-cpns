@@ -3,22 +3,14 @@ class Auth extends MY_Controller{
  
     function __construct(){
         parent::__construct();
-        if ( ! empty($this->uri->segment(2)) ) {
-            if ( $this->uri->segment(2)=='logout' ) {
-                $this->logout();
-            }
-        }
-
-        # check session
-        if( $this->session->userdata('root') ){
-            redirect(base_url('dashboard'));
-        }
         
         # load encrypt library
         $this->load->library('encryption');
         $this->encryption->initialize(
             array(
+                'cipher' => 'aes-256',
                 'mode' => 'ctr',
+                'key' => '3s0c9m7@gmail.com'
             )
         );
 
@@ -57,7 +49,7 @@ class Auth extends MY_Controller{
             if ( $this->encryption->decrypt( $row->password ) == $password ) {
                 # set session user
                 $this->session->set_userdata([ 'root' => $row ]);
-                redirect( base_url() );
+                redirect( base_url('dashboard') );
 
             }
 

@@ -108,57 +108,6 @@ function getTanggalIndoSekarang()
   return (thisDay + ', ' + day + ' ' + months[month] + ' ' + year);
 
 }
-
-function countDownUjian()
-{
-  // Set the date we're counting down to
-  var d= waktuUjian( $('td#countDownUjian').attr('data-tanggal') ,parseInt($('td#countDownUjian').attr('data-waktu')) );
-  var countDownDate = new Date(`${d.dates} ${d.end}`).getTime();
-  // var countDownDate = new Date("2019-07-14 15:37:25").getTime();
-
-  // Update the count down every 1 second
-  var x = setInterval(function() {
-
-    // Get today's date and time
-    var now = new Date().getTime();
-      
-    // Find the distance between now and the count down date
-    var distance = countDownDate - now;
-      
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-    // Output the result in an element with id="demo"
-    // document.getElementById("countDownUjian").innerHTML = days + "d " + hours + "h "
-    // + minutes + "m " + seconds + "s ";
-    document.getElementById("countDownUjian").innerHTML = hours + " Jam "
-    + minutes + " Menit " + seconds + " Detik ";
-    // If the count down is over, write some text 
-    if (distance < 0) { 
-      clearInterval(x);
-      $.get('<?php echo base_url() ?>siswa/proses-ujian/?timeout=true', function(data){
-        $('#myModal .modal-title').html('Proses Ujian');
-        $('#myModal .modal-body').html(data);
-        document.getElementById("countDownUjian").innerHTML = "Waktu Sudah Habis";
-        $('#myModal').modal('show');
-      } ,'html');
-    }
-  }, 1000);
-}
-  <?php
-    if ( $this->uri->segment(2)!='data-ujian' ) {
-      ?>
-        /* cek proses ujian */
-        $.get('<?php echo base_url() ?>siswa/cek-proses-ujian',function(data){
-          if ( data==1 ) 
-            window.location.replace('<?php echo base_url() ?>siswa/data-ujian')
-        })
-      <?php
-    }
-  ?>
 </script>
   <!-- tinymce -->
   <script src="<?php echo base_url() ?>assets/tinymce/tinymce.min.js"></script>

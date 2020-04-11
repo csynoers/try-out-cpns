@@ -23,8 +23,8 @@
 
     <!-- Right navbar links -->
     <div class="navbar-nav ml-auto">
-      <a href="<?php echo base_url() ?>admin/data-profil" class="btn btn-default mr-2">Profil</a>
-      <a href="<?php echo base_url('auth/logout'); ?>" class="btn btn-default">Logout</a>
+      <a href="javascript: void(0)" data-href="<?php echo base_url() ?>user/edit" data-title="Edit Informasi Profil" class="btn btn-default mr-2 form-edit">Profil</a>
+      <a href="<?php echo base_url('../auth/logout'); ?>" class="btn btn-default">Logout</a>
       
       <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
         <i class="fa fa-th-large"></i>

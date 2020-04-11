@@ -63,16 +63,9 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-8">
-            <div class="checkbox icheck">
-              <label class="">
-                <div class="icheckbox_square-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Ingatkan Saya
-              </label>
-            </div>
-          </div>
           <!-- /.col -->
-          <div class="col-4">
-            <input type="hidden" name="<?= $csrf_name ?>" value="<?= $csrf_hash ?>" required="">
+          <div class="btn-block col-12">
+            <input type="hidden" name="<?= $csrf_name ?>" value="<?= $csrf_hash ?>">
             <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
           </div>
           <!-- /.col -->
@@ -82,9 +75,6 @@
         <p>- Atau -</p>
         <p class="mb-1">
           <a href="#">Saya lupa password</a>
-        </p>
-        <p class="mb-0">
-          Belum punya akun ? <a href="register.html" class="text-center">Daftar baru</a>
         </p>
       </div>
     </div>

@@ -18,6 +18,20 @@ class Dashboard extends MY_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
+	public function __construct()
+	{
+		parent::__construct();
+		/**
+		 * # Check authentication 
+		 * # LOAD MODEL :
+		 * 1. 
+		 */
+
+		# Check authentication 
+        if( ! $this->session->userdata('root') ){
+            redirect(base_url());
+		}
+	}
 	public function index()
 	{
 		// $this->session->sess_destroy();

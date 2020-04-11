@@ -37,6 +37,25 @@ class M_users extends CI_Model{
     protected $confirm_payment;
     protected $proof_payment;
     protected $create_atExamUserConfigs;
+    public function get( $username )
+    {
+        $this->db->where( $this->foreignKey, $username );
+        $this->db->join( $this->tableUsersDetail, $this->tableUsersDetailRelation , 'left' );
+
+        return $this->db->get($this->table)->row();
+    }
+    public function store_users( $username )
+    {
+        $this->password = $this->post['password'];
+
+		$data = array(
+			'password' => $this->password,
+		);
+
+		$this->db->where( "username", $username );
+
+		return $this->db->update( $this->table, $data);
+    }
     
     public function mendaftar($id=NULL)
     {
