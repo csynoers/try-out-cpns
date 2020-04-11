@@ -607,13 +607,13 @@ class Ujian extends MY_Controller {
 
 		# generate data insert batch in table answers_detail
 		foreach ($this->session->userdata('user')->rows as $keyCategory => $valueCategory) {
-			if ( $valueCategory->exam_config_id==1 ) {
-				$valueCategory->limit_passing_grade = 45.71;
-			} elseif ( $valueCategory->exam_config_id==2 ) {
-				$valueCategory->limit_passing_grade = 43.33;
-			} elseif ( $valueCategory->exam_config_id==3 ) {
-				$valueCategory->limit_passing_grade = 74.29;
-			}
+			// if ( $valueCategory->exam_config_id==1 ) {
+			// 	$valueCategory->limit_passing_grade = 45.71;
+			// } elseif ( $valueCategory->exam_config_id==2 ) {
+			// 	$valueCategory->limit_passing_grade = 43.33;
+			// } elseif ( $valueCategory->exam_config_id==3 ) {
+			// 	$valueCategory->limit_passing_grade = 74.29;
+			// }
 			
 			# set default variable is zero(0)
 			$valueCategory->correct_answer = 0;
