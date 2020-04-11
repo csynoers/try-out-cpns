@@ -149,6 +149,14 @@
               </p>
             </a>
           </li>
+          <li class="nav-item ">
+            <a href="<?php echo base_url('bank') ?>" class="nav-link <?php echo ($this->uri->segment(1)=='bank') ? 'active' : null ; ?>">
+              <i class="nav-icon fa fa-credit-card"></i>
+              <p>
+                Bank Transfer
+              </p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

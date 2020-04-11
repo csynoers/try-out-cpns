@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2020 at 02:34 PM
+-- Generation Time: Apr 11, 2020 at 10:52 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `bimbelic_tryout`
+-- Database: `jogjaval_5c3-tryout`
 --
 
 -- --------------------------------------------------------
@@ -345,7 +345,7 @@ CREATE TABLE `exam_user_configs` (
   `total_payment` float NOT NULL,
   `bank_transfer` tinytext NOT NULL,
   `confirm_payment` enum('0','1') NOT NULL,
-  `proof_payment` tinytext NOT NULL,
+  `proof_payment` tinytext,
   `create_at` datetime NOT NULL,
   `update_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -355,7 +355,8 @@ CREATE TABLE `exam_user_configs` (
 --
 
 INSERT INTO `exam_user_configs` (`exam_user_config_id`, `username`, `token`, `total_payment`, `bank_transfer`, `confirm_payment`, `proof_payment`, `create_at`, `update_at`) VALUES
-(3, 'sinur', '200401', 100785, '(BCA) 01234567890 a.n Bimbel IC Surabaya', '1', '2000_2d1j_small.jpg', '2020-03-31 23:43:17', '2020-04-01 06:42:09');
+(3, 'sinur', '200401', 100785, '(BCA) 01234567890 a.n Bimbel IC Surabaya', '1', '2000_2d1j_small.jpg', '2020-03-31 23:43:17', '2020-04-01 06:42:09'),
+(4, 'userdua', '200412', 100709, '(MANDIRI) 11234567891 a.n Bimbel IC Surabaya', '1', '2ribuanbaru.jpg', '2020-04-12 01:33:08', '2020-04-11 20:07:32');
 
 -- --------------------------------------------------------
 
@@ -486,8 +487,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `level`, `block`, `create_at`, `update_at`, `last_login`) VALUES
-(1, 'admin', 'd4a2d1f4463233df7c1e359163c4205589e3e42afaf9c180fd3880f54afae3739e42806bef2e6bff93db0c32843ee4508dfc705634bb94064bc89375a82d3c3eFdl29xSvL3lrtWKuyCRyQgx09QmY', 'root', '0', '0000-00-00 00:00:00', '2020-04-01 04:41:37', '0000-00-00 00:00:00'),
-(5, 'sinur', '101eabc9dd414632f1f76880e7472eb3864dc32064957077282a5b5bdc52a709880bec7b76f159184bf4a12217d15655762502d7f72eca60eece91bb14dd2ef4T9N/56hJO7FnD42yT/0swiNPnmMA', 'user', '0', '2020-03-31 13:43:03', '2020-04-11 00:27:04', NULL);
+(1, 'admin', 'd4a2d1f4463233df7c1e359163c4205589e3e42afaf9c180fd3880f54afae3739e42806bef2e6bff93db0c32843ee4508dfc705634bb94064bc89375a82d3c3eFdl29xSvL3lrtWKuyCRyQgx09QmY', 'root', '0', '0000-00-00 00:00:00', '2020-04-11 18:26:12', '2020-04-12 01:26:12'),
+(5, 'sinur', 'f45169cb04b9019b3f333dadc3dc4470bea1535064edb195af7a1480498b1ae63a921a520b94472fd990c7acad4442d05cd7a2f609bba26ca8593b9139619da11UYxdy9e72kRVZmp5rCZiPfYWw8Zyg==', 'user', '0', '2020-03-31 13:43:03', '2020-04-11 18:26:12', '2020-04-12 01:26:12'),
+(6, 'userdua', '61dd55d4a4352fef2efd8f9989f6fd43c60266ecfd0975ed5fcf4ad4acb08b9df33b45ee8288e071854dc9f35ff1acba33b1937467f06458fe2bb131a7344c52/Nrp0MdHbL12g0Q5y6kNS0RTTyncKWI=', 'user', '0', '2020-04-12 00:57:00', '2020-04-11 18:32:55', '2020-04-12 01:32:55');
 
 -- --------------------------------------------------------
 
@@ -509,8 +511,9 @@ CREATE TABLE `users_detail` (
 --
 
 INSERT INTO `users_detail` (`user_detail_id`, `username`, `nik`, `fullname`, `email`, `telp`) VALUES
-(1, 'admin', '1234567890123456', 'ADMIN', '3s0c9m7@gmail.com', '081234567890'),
-(2, 'sinur', '0123456789123456', 'Jogjasite \' Developer', 'tryscm@gmail.com', '08122530688');
+(1, 'admin', '1234567890123456', 'ADMIN', 'pinsus2017surabaya@gmail.com', '081234567890'),
+(2, 'sinur', '1234567890123457', 'Jogjasite \' Developer', 'tryscm@gmail.com', '081225306889'),
+(3, 'userdua', '1234567890123457', 'User ke Dua', '3s0c9m7@gmail.com', '081225306789');
 
 --
 -- Indexes for dumped tables
@@ -608,7 +611,7 @@ ALTER TABLE `answers_detail`
 -- AUTO_INCREMENT for table `banks`
 --
 ALTER TABLE `banks`
-  MODIFY `bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `bank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `choices`
@@ -632,7 +635,7 @@ ALTER TABLE `exam_configs`
 -- AUTO_INCREMENT for table `exam_user_configs`
 --
 ALTER TABLE `exam_user_configs`
-  MODIFY `exam_user_config_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `exam_user_config_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `pages`
@@ -656,13 +659,13 @@ ALTER TABLE `question_categories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users_detail`
 --
 ALTER TABLE `users_detail`
-  MODIFY `user_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
