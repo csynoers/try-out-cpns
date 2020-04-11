@@ -53,6 +53,26 @@
             // $this->debugs($data);
             $this->render_pages( 'hasil_try_out_tidak_lulus', $data );
         }
+        public function export()
+        {
+            switch ($this->uri->segment(3)) {
+                case 'lulus':
+                    $data['rows'] = $this->M_answers->get_lulus();
+                    $this->load->view( 'hasil_try_out_lulus_export', $data );
+                    break;
+                
+                case 'tidak-lulus':
+                    $data['rows'] = $this->M_answers->get_tidak_lulus();
+                    $this->load->view( 'hasil_try_out_tidak_lulus_export', $data );
+                    break;
+                
+                default:
+                    # semua hasil try out
+                    $data['rows'] = $this->M_answers->get();
+                    $this->load->view( 'hasil_try_out_export', $data );
+                    break;
+            }
+        }
         public function detail()
         {
             $answer_id = $this->uri->segment(3);

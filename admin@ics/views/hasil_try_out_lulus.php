@@ -22,6 +22,9 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
+            <div class="card-header">
+              <a href="javascript: void(0)" data-href="<?= base_url('hasil/export/lulus') ?>" data-title="Lulus Try Out" class="btn btn-primary export-excel">Export ke Excel</a>
+            </div>
             <div class="card-body">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
