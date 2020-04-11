@@ -74,6 +74,7 @@ class Ujian extends MY_Controller {
 					'href' => base_url("ujian/detail-pembayaran/{$row_user_configs->exam_user_config_id}"),
 					'title' => 'Detail Pembayaran untuk mendapatkan Token',
 					'label' => 'Detail Pembayaran',
+					'info' => NULL,
 				);
 			}
 

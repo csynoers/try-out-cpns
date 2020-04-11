@@ -76,6 +76,25 @@ class M_users extends CI_Model{
 
         return $this->db->get( $this->table )->result_object();
     }
+    public function users_by_exam_id($id=NULL)
+    {
+        # where id users = $id
+        if ( $id ) {
+            $this->db->where($this->primaryKeyExamUserConfigs,$id);
+        }
+
+        # where level SISWA
+        $this->level = 'users.level';
+        $this->db->where( $this->level, 'user' );
+
+        # left join table users_detail
+        $this->db->join( $this->tableUsersDetail, $this->tableUsersDetailRelation, 'left' );
+
+        # left join table exam_user_configs
+        $this->db->join( $this->tableExamUserConfigs, $this->tableExamUserConfigsRelation, 'left' );
+
+        return $this->db->get( $this->table )->result_object();
+    }
 
     public function terdaftar()
     {
@@ -110,6 +129,7 @@ class M_users extends CI_Model{
         # siswa terdaftar jika kolom confirm_payment = 0
         $this->confirm_payment = 'exam_user_configs.confirm_payment';
         $this->db->where( $this->confirm_payment, '0' );
+        $this->db->where('exam_user_configs.proof_payment is NOT NULL');
 
         # left join table users_detail
         $this->db->join( $this->tableUsersDetail, $this->tableUsersDetailRelation, 'left' );
