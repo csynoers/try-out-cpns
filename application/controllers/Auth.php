@@ -1,4 +1,7 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 class Auth extends MY_Controller{
  
     function __construct(){
@@ -18,6 +21,11 @@ class Auth extends MY_Controller{
                 'key' => '3s0c9m7@gmail.com'
             )
         );
+
+        # require php mailer
+        require APPPATH.'libraries/phpmailer/src/Exception.php';
+        require APPPATH.'libraries/phpmailer/src/PHPMailer.php';
+        require APPPATH.'libraries/phpmailer/src/SMTP.php';
 
     }
 
@@ -194,39 +202,40 @@ class Auth extends MY_Controller{
         $cek_users  = $this->M_auth->check_already_exist(); 
 
         if ( $cek_users->num_rows() > 0 ) {
-            /* ==================== START :: SEND EMAIL ==================== */
-            $data = [];
-            $data['mail']['email'] = $post['email'];
-            $data['mail']['link_konfirmasi'] = 'https://locdownstore.com/index.php?konfirmasi_email=' . base64_encode($post['email']);
-            $data['mail']['subjek'] = "Konfirmasi Email";
-            $data['mail']['pesan'] = "
+            $row      = $cek_users->row();
+            // $this->debugs($row);
+            $data['pesan'] = "
                 <html>
                     <head>
-                        <title>TOKO LOCDOWN STORE</title>
+                        <title>Try Out CPNS</title>
                     </head>
-                    <body>
-                        <div style='
-                            margin: 10% 20%;
-                            background: #ddd;
-                            padding: 20px;
-                        '>
-                            <b>Selamat anda telah terdaftar sebagai member silahkan :</b><br>
-                            <a href='{$data['mail']['link_konfirmasi']}'>Login</a>
+                    <body style='background: #eee;'>
+                        <div style='padding: 50px;'>
+                            <div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 15px 15px 0px 0px;'>
+                                <h1>Try Out CAT CPNS</h1>
+                            </div>
+                            <div style='background: #fff;padding: 30px 30px;'>
+                                <h2 style='margin-top: 0px'>Hi {$row->fullname},</h2>
+                                <p>Username Try Out kamu adalah : <a href='mailto:{$row->email}' target='_blank'>{$row->email}</a></p>
+                                <a href='".base_url('reset-password?token='. $this->encryption->encrypt($row->email))."' target='_blank' style='background-color: #39a300;color: #fff;padding: 10px 12px;text-decoration: none;'>Klik disini untuk mengganti password</a>
+                                <p style='margin-bottom: 0px'>Jika Anda mengetahui kata sandi untuk akun ini, Anda dapat masuk dengan nama pengguna di atas.</p>
+                            </div>
+                            <div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 0px 0px 15px 15px;'>
+                                <p><a href='".base_url()."' target='_blank' style='color: wheat;font-weight: bold;'>Try Out CAT CPNS Bimbel IC Surabaya © ".date('Y')."</a><br> Pusat Operasional : Jl. Mulyosari Mas C3 No 19 Surabaya</p>
+                            </div>
                         </div>
+                    </body>
                 </html>	
             ";
-    
-            // Always set content-type when sending HTML email
-            $data['mail']['dari'] = "MIME-Version: 1.0" . "\r\n";
-            $data['mail']['dari'] .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    
-            // More headers
-            $data['mail']['dari'] .= 'From: <support@locdownstore.com>' . "\r\n";
-            mail($data['mail']['email'],$data['mail']['subjek'],$data['mail']['pesan'],$data['mail']['dari']);
-            /* ==================== END :: SEND EMAIL ==================== */
-            echo $data['mail']['pesan'];
 
-            $this->debugs($data['mail']);
+            if ( $this->send_email_smtp('Reset Password',$post['email'],$data['pesan']) ) {
+                # code...
+                echo ("<script>window.alert('Permintaan reset password berhasil dikirim, Silahkan buka email {$post['email']} untuk mendapatkan link reset password');window.location.href='".base_url()."';</script>");
+            } else {
+                $this->session->set_flashdata('msg', 'Maaf! link gagal dikirimkan ke email : '.$post['email']);
+                redirect(base_url('forget-password'));
+            };
+            /* ==================== END :: SEND EMAIL ==================== */
         } else {
             $this->session->set_flashdata('msg', 'Maaf! User dengan Email: '.$post['email'].' tidak ditemukan');
             redirect(base_url('forget-password'));
@@ -235,4 +244,57 @@ class Auth extends MY_Controller{
         // $this->debugs();
     }
     /*  */
+
+    protected function send_email_smtp($subject,$to,$html)
+    {
+        /* ==================== START :: SEND EMAIL ==================== */
+
+        // PHPMailer object
+        $response = false;
+        $mail = new PHPMailer();                     
+            
+        // SMTP configuration
+        $mail->isSMTP();
+
+        //Enable SMTP debugging
+        // 0 = off (for production use)
+        // 1 = client messages
+        // 2 = client and server messages
+        $mail->SMTPDebug = 0;
+
+        $mail->Host     = 'smtp.gmail.com'; //sesuaikan sesuai nama domain hosting/server yang digunakan
+        $mail->SMTPAuth = true;
+        $mail->Username = '3s0c9m7@gmail.com'; // user email
+        $mail->Password = '@subandiyah'; // password email
+        $mail->SMTPSecure = 'tls';
+        $mail->Port     = 587; // GMail - 465/587/995/993
+
+        $mail->setFrom('pinsus2017surabaya@gmail.com', 'Try Out CAT CPNS'); // user email
+        $mail->addReplyTo('pinsus2017surabaya@gmail.com', ''); //user email
+
+        // Add a recipient
+        $mail->addAddress($to); //email tujuan pengiriman email
+
+        // Email subject
+        $mail->Subject = $subject; //subject email
+
+        // Set email format to HTML
+        $mail->isHTML(true);
+
+        // Email body content
+        $mailContent = $html; // isi email
+        $mail->Body = $mailContent;
+
+        // Send email
+        if(!$mail->send()){
+            // echo 'Message could not be sent.';
+            // echo 'Mailer Error: ' . $mail->ErrorInfo;
+            $response = FALSE;
+        }else{
+            // echo 'Message has been sent';
+            $response = TRUE;
+        }
+        /* ==================== END :: SEND EMAIL ==================== */
+        return $response;
+    }
 }
