@@ -27,7 +27,7 @@
       <?php
         if( $this->session->userdata('user') )
         {
-          echo '<a href="'.base_url('auth/logout').'" class="btn btn-default mr-3">Profil</a>';
+          echo '<a href="javascript: void(0)" data-title="Informasi Profil User" data-href="'.base_url('user/edit').'" class="btn btn-default mr-3 form-load">Profil</a>';
           echo '<a href="'.base_url('auth/logout').'" class="btn btn-default">Logout</a>';
         }
       ?>

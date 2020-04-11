@@ -92,7 +92,6 @@ class Auth extends MY_Controller{
 
         # cek apakah user sudah dengan nik/username/email/telp sudah ada sebelumnya
         $cek_users  = $this->M_auth->check_already_exist();
-        
         if ( $cek_users->num_rows() > 0 ) {
             # code...
             $password = $post['password'];

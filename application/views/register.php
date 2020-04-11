@@ -88,7 +88,7 @@
               <span class="fa fa-lock input-group-text"></span>
           </div>
         </div>
-        <input type="text" class="form-control mb-3" name="<?= $csrf_name ?>" value="<?= $csrf_hash ?>" required="">
+        <input type="hidden" class="form-control mb-3" name="<?= $csrf_name ?>" value="<?= $csrf_hash ?>" >
         <button type="submit" class="btn btn-primary btn-block btn-flat">Sign Up</button>
       </form>
       <div class="social-auth-links text-center mb-3">
