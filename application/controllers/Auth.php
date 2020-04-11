@@ -169,4 +169,69 @@ class Auth extends MY_Controller{
         $this->session->sess_destroy();
         redirect(base_url());
     }
+
+    /*  */
+    public function forget_password()
+    {
+        $this->load->view('forget_password');
+    }
+    /*  */
+
+    /*  */
+    public function send_reset_password()
+    {
+        $post = array(
+            'nik' => $this->security->xss_clean($this->input->post('email')),
+            'email' => $this->security->xss_clean($this->input->post('email')),
+            'telp' => $this->security->xss_clean($this->input->post('email')),
+            'username' => $this->security->xss_clean($this->input->post('email')),
+        );
+
+        # send post to model
+        $this->M_auth->post = $post;
+
+        # cek apakah user sudah dengan nik/username/email/telp sudah ada sebelumnya
+        $cek_users  = $this->M_auth->check_already_exist(); 
+
+        if ( $cek_users->num_rows() > 0 ) {
+            /* ==================== START :: SEND EMAIL ==================== */
+            $data = [];
+            $data['mail']['email'] = $post['email'];
+            $data['mail']['link_konfirmasi'] = 'https://locdownstore.com/index.php?konfirmasi_email=' . base64_encode($post['email']);
+            $data['mail']['subjek'] = "Konfirmasi Email";
+            $data['mail']['pesan'] = "
+                <html>
+                    <head>
+                        <title>TOKO LOCDOWN STORE</title>
+                    </head>
+                    <body>
+                        <div style='
+                            margin: 10% 20%;
+                            background: #ddd;
+                            padding: 20px;
+                        '>
+                            <b>Selamat anda telah terdaftar sebagai member silahkan :</b><br>
+                            <a href='{$data['mail']['link_konfirmasi']}'>Login</a>
+                        </div>
+                    </body>
+                </html>	
+            ";
+    
+            // Always set content-type when sending HTML email
+            $data['mail']['dari'] = "MIME-Version: 1.0" . "\r\n";
+            $data['mail']['dari'] .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+    
+            // More headers
+            $data['mail']['dari'] .= 'From: <support@locdownstore.com>' . "\r\n";
+            mail($data['mail']['email'],$data['mail']['subjek'],$data['mail']['pesan'],$data['mail']['dari']);
+            /* ==================== END :: SEND EMAIL ==================== */
+            echo $data['mail']['pesan'];
+        } else {
+            $this->session->set_flashdata('msg', 'Maaf! User dengan Email: '.$post['email'].' tidak ditemukan');
+            redirect(base_url('forget-password'));
+        }
+        
+        // $this->debugs();
+    }
+    /*  */
 }

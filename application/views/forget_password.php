@@ -26,22 +26,22 @@
       background-size: cover;
     }
     .card {
-      background-color: #ffffff9e !important;
+      /* background-color: #ffffff9e !important; */
     }
     .card-body {
-      background-color: #fff0 !important;
+      /* background-color: #fff0 !important; */
     }
   </style>
 </head>
-<body class="hold-transition login-page" >
+<body class="hold-transition login-pageXXX" >
 <div class="login-box">
   <div class="login-logo">
     <a href="<?php echo base_url() ?>"><b>Try Out</b> CAT CPNS</a>
   </div>
   <!-- /.login-logo -->
-  <div class="card">
+  <div class="cardXXX">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in Try Out</p>
+      <p class="login-box-msg">Lupa Password</p>
       <?php
         if ( ! empty($this->session->flashdata('msg')) ) {
           # code...
@@ -53,25 +53,19 @@
           ';
         }
       ?>
-      <form action="<?php echo base_url('auth/process'); ?>" method="post">
+      <form action="<?php echo base_url('send-reset-password'); ?>" method="post">
         <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control" placeholder="Masukan username" required="" autocomplete="off">
+          <input name="email" type="email" class="form-control" placeholder="email@gmail.com" required="">
           <div class="input-group-append">
               <span class="fa fa-user input-group-text"></span>
           </div>
         </div>
-        <div class="input-group mb-3">
-          <input name="password" type="password" class="form-control" placeholder="Masukan password" required="" autocomplete="off">
-          <div class="input-group-append">
-              <span class="fa fa-lock input-group-text"></span>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+        <button type="submit" class="btn btn-primary btn-block btn-flat">Kirim</button>
       </form>
       <div class="social-auth-links text-center mb-3">
         <p>-- Atau --</p>
-        <p class="mb-1">
-          <a href="#">Saya lupa password</a>
+        <p class="mb-0">
+          Sudah punya akun ? <a href="<?= base_url('auth') ?>" class="text-center">Masuk</a>
         </p>
         <p class="mb-0">
           Belum punya akun ? <a href="<?= base_url('auth/register') ?>" class="text-center">Daftar baru</a>

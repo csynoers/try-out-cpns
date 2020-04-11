@@ -74,7 +74,7 @@
       <div class="social-auth-links text-center mb-3">
         <p>- Atau -</p>
         <p class="mb-1">
-          <a href="#">Saya lupa password</a>
+          <a href="<?= base_url() ?>forget-password">Saya lupa password</a>
         </p>
       </div>
     </div>
