@@ -53,6 +53,8 @@ $route['default_controller'] = 'website';
 $route['pages/(:any)'] = 'pages/index/$1';
 $route['forget-password'] = 'auth/forget-password';
 $route['send-reset-password'] = 'auth/send-reset-password';
+$route['process-reset-password'] = 'auth/process-reset-password';
+$route['reset-password'] = 'auth/reset-password';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = TRUE;

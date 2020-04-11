@@ -217,7 +217,7 @@ class Auth extends MY_Controller{
                             <div style='background: #fff;padding: 30px 30px;'>
                                 <h2 style='margin-top: 0px'>Hi {$row->fullname},</h2>
                                 <p>Username Try Out kamu adalah : <a href='mailto:{$row->email}' target='_blank'>{$row->email}</a></p>
-                                <a href='".base_url('reset-password?token='. $this->encryption->encrypt($row->email))."' target='_blank' style='background-color: #39a300;color: #fff;padding: 10px 12px;text-decoration: none;'>Klik disini untuk mengganti password</a>
+                                <a href='".base_url('reset-password?token='. $this->encryption->encrypt($row->username))."' target='_blank' style='background-color: #39a300;color: #fff;padding: 10px 12px;text-decoration: none;'>Klik disini untuk mengganti password</a>
                                 <p style='margin-bottom: 0px'>Jika Anda mengetahui kata sandi untuk akun ini, Anda dapat masuk dengan nama pengguna di atas.</p>
                             </div>
                             <div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 0px 0px 15px 15px;'>
@@ -228,6 +228,8 @@ class Auth extends MY_Controller{
                 </html>	
             ";
 
+            // echo $data['pesan'];
+            // echo $this->encryption->decrypt( '8a12e43cd69b8b7472c2318fe954e5eabf9f7033082b752b0e67390cac2f01c71fa2b58036bb833926b6de50db255a4e06ebfa88f5589337f1557f3e19fd98222JQGclF5DUB9lEnoMRcUEIpBlcvE' );
             if ( $this->send_email_smtp('Reset Password',$post['email'],$data['pesan']) ) {
                 # code...
                 echo ("<script>window.alert('Permintaan reset password berhasil dikirim, Silahkan buka email {$post['email']} untuk mendapatkan link reset password');window.location.href='".base_url()."';</script>");
@@ -296,5 +298,32 @@ class Auth extends MY_Controller{
         }
         /* ==================== END :: SEND EMAIL ==================== */
         return $response;
+    }
+
+    public function reset_password()
+    {
+        if ( $this->input->get('token') ) {
+            $data['token'] = $this->input->get('token');
+            $this->load->view('reset_password',$data);
+        } else {
+            echo ("<script>window.alert('Maaf anda belum melakukan permintaan lupa password');window.location.href='".base_url('forget-password')."';</script>");
+        }
+    }
+    public function process_reset_password()
+    {
+        $post = $this->input->post();
+        $post['username'] = $this->encryption->decrypt( $post['token'] );
+        $post['password'] = $this->encryption->encrypt( $post['password'] );
+        
+        # send to model
+        $this->M_auth->post = $post;
+
+        if ( $this->M_auth->reset_password() ) {
+            # code...
+            echo ("<script>window.alert('Password baru berhasil dibuat silahkan melakukan login untuk mencobanya');window.location.href='".base_url('auth')."';</script>");
+        } else {
+            echo ("<script>window.alert('Maaf! password gagal diubah silahkan kirim ulang permintaan lupa password');window.location.href='".base_url('forget-password')."';</script>");
+        };
+
     }
 }

@@ -83,4 +83,14 @@ class M_auth extends CI_Model{
 
 		return $this->db->get( $this->table );
 	}
+	public function reset_password()
+	{
+		$this->username = $this->post['username'];
+		$this->password = $this->post['password'];
+		$data =  array(
+			'password' => $this->password,
+		);
+		$this->db->where($this->foreignKey,$this->username);
+		return $this->db->update($this->table, $data);
+	}
 }
