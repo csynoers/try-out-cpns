@@ -21,6 +21,12 @@ class Soal extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		# Check authentication 
+        if( ! $this->session->userdata('root') ){
+            redirect(base_url());
+		}
+		
 		$this->load->model(['M_question','M_question_categories','M_choice']);
 	}
 

@@ -21,6 +21,12 @@ class Kategori extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		# Check authentication 
+        if( ! $this->session->userdata('root') ){
+            redirect(base_url());
+		}
+		
     }
     
     /* ==================== START : KATEGORI SOAL  ==================== */

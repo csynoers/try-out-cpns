@@ -21,6 +21,12 @@ class Pages extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		# Check authentication 
+        if( ! $this->session->userdata('root') ){
+            redirect(base_url());
+		}
+		
 		$this->load->model('M_pages');
 	}
 	/* ==================== START : DEFAULT PAGE url{pages/index}==================== */

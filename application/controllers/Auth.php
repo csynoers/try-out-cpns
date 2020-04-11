@@ -100,25 +100,25 @@ class Auth extends MY_Controller{
             # if decrypt row->password same as $password
             if ( $this->encryption->decrypt( $row->password ) == $password ) {
                 # set session user
-                // if ( $row->level=='root' ) {
-                //     # code...level ADMIN
-                //     $this->session->set_userdata([ "{$row->level}" => $row ]);
-                //     redirect( base_url('admin@ics') );
-                // } else {
-                //     # code...level USER
-                //     $row->nominal_transfer = 100000+rand ( 1 , 999 );
-                //     $this->session->set_userdata([ "{$row->level}" => $row ]);
-                //     redirect( base_url() );
-                // }
-                if ( $row->level=='user' ) {
+                if ( $row->level=='root' ) {
+                    # code...level ADMIN
+                    $this->session->set_userdata([ "{$row->level}" => $row ]);
+                    redirect( base_url('admin@ics') );
+                } else {
                     # code...level USER
                     $row->nominal_transfer = 100000+rand ( 1 , 999 );
                     $this->session->set_userdata([ "{$row->level}" => $row ]);
                     redirect( base_url() );
-                } else {
-                    $this->session->set_flashdata('msg', 'username or password does not exist.');
-                    redirect(base_url('auth'));
                 }
+                // if ( $row->level=='user' ) {
+                //     # code...level USER
+                //     $row->nominal_transfer = 100000+rand ( 1 , 999 );
+                //     $this->session->set_userdata([ "{$row->level}" => $row ]);
+                //     redirect( base_url() );
+                // } else {
+                //     $this->session->set_flashdata('msg', 'username or password does not exist.');
+                //     redirect(base_url('auth'));
+                // }
 
             }
 

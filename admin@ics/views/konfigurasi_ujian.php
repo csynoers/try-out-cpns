@@ -24,6 +24,52 @@
           <div class="card">
             <!-- /.card-header -->
             <div class="card-body">
+              <div class="row">
+                <div class='input-group mb-3 col-6'>
+                  <div class='input-group-prepend'>
+                    <span class='input-group-text'>Biaya aktivasi token</span>
+                  </div>
+                  <div class='input-group-prepend'>
+                    <span class='input-group-text'>Rp. </span>
+                  </div>
+                  <input min='1' value='' type='number' name='exam_limit' class='form-control' placeholder='Masukan biaya disini type number...' required=''>
+                  <div class='input-group-prepend'>
+                    <span class='input-group-text'>Menit</span>
+                  </div>
+                  <div class='input-group-prepend'>
+                    <button type='submit' class='bg-primary-gradient btn btn-primary input-group-text'>Save</button>
+                  </div>
+                </div>
+                <div class='input-group mb-3 col-6'>
+                  <div class='input-group-prepend'>
+                    <span class='input-group-text'>Passing Grade SKD</span>
+                  </div>
+                  <input min='1' value='' type='number' name='exam_limit' class='form-control' placeholder='Masukan biaya disini type number...' required=''>
+                  <div class='input-group-prepend'>
+                    <span class='input-group-text'>%</span>
+                  </div>
+                  <div class='input-group-prepend'>
+                    <button type='submit' class='bg-primary-gradient btn btn-primary input-group-text'>Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3>Konfigurasi kategori soal</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>

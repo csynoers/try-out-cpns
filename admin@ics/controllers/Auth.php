@@ -20,6 +20,10 @@ class Auth extends MY_Controller{
     }
 
     function index(){
+        # Check authentication 
+        if( $this->session->userdata('root') ){
+            redirect(base_url('dashboard'));
+		}
         $csrf = array(
             'csrf_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash()

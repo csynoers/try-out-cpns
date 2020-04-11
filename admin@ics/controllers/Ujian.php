@@ -21,6 +21,12 @@ class Ujian extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		# Check authentication 
+        if( ! $this->session->userdata('root') ){
+            redirect(base_url());
+		}
+
 		$this->load->model('M_exam_configs');
 	}
 	/* ==================== START : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi}==================== */
@@ -75,21 +81,30 @@ class Ujian extends MY_Controller {
 						<span class='form-control font-weight-normal'>{$jenis_penilaian}</span>
 					</div>
 					<div class='form-group'>
-						<label><small class='text-info'>*) Masukan batas waktu menegerjakan dan Jumlah soal dibawah ini :</small></label>
+						<label><small class='text-info'>*) Masukan batas waktu menegerjakan, Jumlah soal dan Passing Grade dibawah ini :</small></label>
 						<div class='input-group mb-3'>
-							<div class='input-group-prepend'>
-								<span class='input-group-text'>Batas waktu pengerjaan</span>
+							<div class='input-group-prepend w-25'>
+								<span class='input-group-text w-100'>Batas waktu pengerjaan</span>
 							</div>
 							<input min='1' value='{$value->exam_limit}' type='number' name='exam_limit' class='form-control' placeholder='Masukan batas waktu pengerjaan disini type number...' required=''>
-							<div class='input-group-prepend'>
-								<span class='input-group-text'>Menit</span>
+							<div class='input-group-prepend w-25'>
+								<span class='input-group-text w-100'>Menit</span>
 							</div>
 						</div>
 						<div class='input-group mb-3'>
-							<div class='input-group-prepend'>
-								<span class='input-group-text'>Jumlah soal</span>
+							<div class='input-group-prepend w-25'>
+								<span class='input-group-text w-100'>Jumlah soal</span>
 							</div>
 							<input min='1' max='{$value->count_of_question}' value='{$value->number_of_questions}' type='number' name='number_of_questions' class='form-control' placeholder='Masukan jumlah soal disini type number...' required=''>
+						</div>
+						<div class='input-group mb-3'>
+							<div class='input-group-prepend w-25'>
+								<span class='input-group-text w-100'>Passing Grade</span>
+							</div>
+							<input min='1' value='{$value->passing_grade}' type='number' name='passing_grade' class='form-control' placeholder='Masukan passing grade disini type number...' required=''>
+							<div class='input-group-prepend w-25'>
+								<span class='input-group-text w-100'>%</span>
+							</div>
 						</div>
 					</div>
 					<button type='submit' class='btn btn-primary'>Save</button>
