@@ -112,19 +112,19 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'hasil-penilaian') ? 'menu-open' : null ; ?>">
+          <li class="nav-item has-treeview <?php echo ($this->uri->segment(1) == 'hasil') ? 'menu-open' : null ; ?>">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-calendar-check-o"></i>
               <p>
-                Hasil Penilaian
+                Hasil Try Out
                 <i class="right fa fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item" >
-                <a href="<?php echo base_url('soal/index') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'index') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('hasil/index') ?>" class="nav-link <?php echo ($this->uri->segment(2) == 'index') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Semua Siswa</p>
+                  <p>Semua Hasil Try Out</p>
                 </a>
               </li>
               <li class="nav-item">
