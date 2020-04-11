@@ -31,12 +31,17 @@ class Dashboard extends MY_Controller {
         if( ! $this->session->userdata('root') ){
             redirect(base_url());
 		}
+
+		$this->load->model(['M_users','M_answers','M_question']);
 	}
 	public function index()
 	{
-		// $this->session->sess_destroy();
-        // redirect(base_url('auth'));
-        $this->render_pages( 'dashboard' );
+		$data['siswa_terdaftar'] = count($this->M_users->terdaftar());
+		$data['pembayaran_belum_dikonfirmasi'] = count($this->M_users->konfirmasi());
+		$data['hasil_try_out'] = count($this->M_answers->get());
+		$data['total_soal'] = count($this->M_question->get_question());
+		// $this->debugs($data);
+        $this->render_pages( 'dashboard', $data );
         
 	}
 }

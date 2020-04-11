@@ -38,14 +38,14 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>0</h3>
+                <h3><?= $siswa_terdaftar ?></h3>
 
-                <p>Guru</p>
+                <p>Siswa Terdaftar</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="<?php echo base_url('admin/data-guru')?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="<?php echo base_url('siswa/terdaftar')?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -53,14 +53,14 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>0</sup></h3>
+                <h3><?= $pembayaran_belum_dikonfirmasi ?></sup></h3>
 
-                <p>Siswa</p>
+                <p>Pembayaran Belum Dikonfirmasi</p>
               </div>
               <div class="icon">
-                <i class="fa fa-graduation-cap"></i>
+                <i class="fa fa-credit-card"></i>
               </div>
-              <a href="<?php echo base_url('admin/data-siswa') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="<?php echo base_url('siswa/konfirmasi') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -68,14 +68,14 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>0</h3>
+                <h3><?= $hasil_try_out ?></h3>
 
-                <p>Kelas</p>
+                <p>Hasil Try Out</p>
               </div>
               <div class="icon">
-                <i class=""></i>
+                <i class="fa fa-calendar-check-o"></i>
               </div>
-              <a href="<?php echo base_url('admin/data-kelas') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="<?php echo base_url('hasil') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -83,14 +83,14 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>0</h3>
+                <h3><?= $total_soal ?></h3>
 
-                <p>Pelajaran</p>
+                <p>Total Soal</p>
               </div>
               <div class="icon">
-                <i class=""></i>
+                <i class="fa fa-clipboard"></i>
               </div>
-              <a href="<?php echo base_url('admin/data-pelajaran') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="<?php echo base_url('soal') ?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
