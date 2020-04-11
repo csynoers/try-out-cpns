@@ -27,7 +27,7 @@ class Ujian extends MY_Controller {
             redirect(base_url());
 		}
 
-		$this->load->model('M_exam_configs');
+		$this->load->model(['M_exam_configs','M_configs']);
 	}
 	/* ==================== START : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi}==================== */
 	public function konfigurasi()
@@ -50,6 +50,14 @@ class Ujian extends MY_Controller {
 
 		} else {
 			# jika segment ke-3 kosong
+
+			# get data token from table configs where id = 2;
+			$data['token'] = $this->M_configs->get( $id=2 );  
+
+			# get data SKD from table configs where id = 2;
+			$data['skd'] = $this->M_configs->get( $id=1 );
+
+			# get rows data from table exam_configs
 			$data['rows'] = $this->M_exam_configs->get();
 			// $this->debugs($data);
 			$this->render_pages( 'konfigurasi_ujian', $data );
@@ -101,12 +109,13 @@ class Ujian extends MY_Controller {
 							<div class='input-group-prepend w-25'>
 								<span class='input-group-text w-100'>Passing Grade</span>
 							</div>
-							<input min='1' value='{$value->passing_grade}' type='number' name='passing_grade' class='form-control' placeholder='Masukan passing grade disini type number...' required=''>
+							<input step='.01' value='{$value->passing_grade}' type='number' name='passing_grade' class='form-control' placeholder='Masukan passing grade disini type number...' required=''>
 							<div class='input-group-prepend w-25'>
 								<span class='input-group-text w-100'>%</span>
 							</div>
 						</div>
 					</div>
+					<input type='hidden' name='store' value='exam_configs'>
 					<button type='submit' class='btn btn-primary'>Save</button>
 				</form>
 			";
@@ -119,18 +128,39 @@ class Ujian extends MY_Controller {
 	/* ==================== START : PAGE KONFIGURASI UJIAN url{ujian/konfigurasi/post/$id}==================== */
 	public function konfigurasi_store()
 	{
-		$this->M_exam_configs->post= $this->input->post();
-		
-		if ( $this->M_exam_configs->store() ) {
-			$this->msg= [
-				'stats'=> 1,
-				'msg'=> 'Konfigurasi ujian berhasil diubah',
-			];
-		} else {
-			$this->msg= [
-				'stats'=> 0,
-				'msg'=> 'Konfigurasi ujian gagal diubah',
-			];
+		if ( $this->input->post('store')=='configs' ) {
+			# process store table configs
+			$this->M_configs->post= $this->input->post();
+
+			# get id for where condition
+			$id = $this->uri->segment(4);
+
+			if ( $this->M_configs->store( $id ) ) {
+				$this->msg= [
+					'stats'=> 1,
+					'msg'=> 'Konfigurasi berhasil diubah',
+				];
+			} else {
+				$this->msg= [
+					'stats'=> 0,
+					'msg'=> 'Konfigurasi gagal diubah',
+				];
+			}
+		} elseif ( $this->input->post('store')=='exam_configs' ) {
+			# process store table exam_configs
+			$this->M_exam_configs->post= $this->input->post();
+			
+			if ( $this->M_exam_configs->store() ) {
+				$this->msg= [
+					'stats'=> 1,
+					'msg'=> 'Konfigurasi ujian berhasil diubah',
+				];
+			} else {
+				$this->msg= [
+					'stats'=> 0,
+					'msg'=> 'Konfigurasi ujian gagal diubah',
+				];
+			}
 		}
 		echo json_encode( $this->msg );
 	}
