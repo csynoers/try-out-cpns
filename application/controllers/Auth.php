@@ -70,18 +70,40 @@ class Auth extends MY_Controller{
         $cek_users  = $this->M_auth->check_already_exist()->num_rows();
         
         if ( $cek_users > 0 ) {
-            $this->session->set_flashdata('msg', 'Maaf! data nik/username/email/telp sudah pernah digunakan silahkan coba lagi! atau silahkan klik link <a href="#">Saya lupa password</a> ');
-            redirect(base_url('auth/register'));
+            $this->session->set_flashdata('msg', 'Maaf! data nik/username/email/telp sudah pernah digunakan silahkan coba lagi! atau silahkan klik link <a href="'.base_url('forget-password').'">Saya lupa password</a> ');
+            // redirect(base_url('auth/register'));
 
         } else {
             # jika belum ada jalankan proses store data
-            $this->debugs( $this->M_auth->store() );
-            $this->session->set_flashdata('msg', 'Terimakasih telah mendaftar, data berhasil dikirim. Silahkan buka email anda dan klik tautan yang kami kirimkan untuk aktivasi pendaftaran akun anda');
-            redirect( base_url() );
+            $this->M_auth->store();
+            
+            $data['pesan'] = "
+                <html>
+                    <head>
+                        <title>Try Out CPNS</title>
+                    </head>
+                    <body style='background: #eee;'>
+                        <div style='padding: 50px;'>
+                            <div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 15px 15px 0px 0px;'>
+                                <h1>Try Out CAT CPNS</h1>
+                            </div>
+                            <div style='background: #fff;padding: 30px 30px;'>
+                                <h2 style='margin-top: 0px'>Hi {$post['fullname']},</h2>
+                                <p>Username Try Out kamu adalah : {$post['nik']} / {$post['username']} / <a href='mailto:{$post['email']}' target='_blank'>{$post['email']}</a> / {$post['telp']} (pilih salah satu saja)</p>
+                                <a href='".base_url('email-confirmation?token='. $this->encryption->encrypt($post['email']))."' target='_blank' style='background-color: #39a300;color: #fff;padding: 10px 12px;text-decoration: none;'>Klik disini untuk melakukan konfirmasi email</a>
+                            </div>
+                            <div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 0px 0px 15px 15px;'>
+                                <p><a href='".base_url()."' target='_blank' style='color: wheat;font-weight: bold;'>Try Out CAT CPNS Bimbel IC Surabaya © ".date('Y')."</a><br> Pusat Operasional : Jl. Mulyosari Mas C3 No 19 Surabaya</p>
+                            </div>
+                        </div>
+                    </body>
+                </html>	
+            ";
+
+            $this->send_email_smtp('Konfirmasi email ',$post['email'],$data['pesan']);
+            echo ("<script>window.alert('Terimakasih telah mendaftar, data berhasil dikirim. Silahkan buka email anda dan klik tautan yang kami kirimkan');window.location.href='".base_url()."';</script>");
         }
         
-
-        $this->debugs($this->M_auth);
     }
 
     function process(){
@@ -128,15 +150,6 @@ class Auth extends MY_Controller{
                     }
                     
                 }
-                // if ( $row->level=='user' ) {
-                //     # code...level USER
-                //     $row->nominal_transfer = 100000+rand ( 1 , 999 );
-                //     $this->session->set_userdata([ "{$row->level}" => $row ]);
-                //     redirect( base_url() );
-                // } else {
-                //     $this->session->set_flashdata('msg', 'username or password does not exist.');
-                //     redirect(base_url('auth'));
-                // }
 
             }
 
@@ -154,33 +167,6 @@ class Auth extends MY_Controller{
             $this->session->set_flashdata('msg', 'username or password does not exist.');
             redirect(base_url('auth'));
         }
-        // die();
-        
-        // if ( $cek_users > 0 ) {
-        //     # code...
-        //     $row  = $this->M_auth->check_auth("users",$where_users)->row();
-        //     $data_session = array(
-        //         'username'  => $username,
-        //         'password'  => $password,
-        //         'level'     => $row->level,
-        //         'status'     => 'login',
-        //     );
-            
-        //     $this->session->set_userdata($data_session);
-        //     $url=[
-        //         'admin' => 'admin',
-        //         'guru' => 'guru',
-        //         'guru_kep_lab' => 'guru-kep-lab',
-        //         'siswa' => 'siswa',
-        //     ];
-        //     redirect(base_url( $url[$this->session->userdata('level')] ));
-        // }
-        
-        // else{
-            
-        //     $this->session->set_flashdata('msg', 'Maaf! Username atau Password anda salah!');
-        //     redirect(base_url('auth'));
-        // }
     }
 
     function logout(){
