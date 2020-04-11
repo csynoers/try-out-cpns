@@ -42,7 +42,7 @@
                 </form>
                 <!-- / form -->
                 
-                <form action='javascript: void(0)' class='col-6'>
+                <form action='javascript: void(0)' data-action='<?= base_url('ujian/konfigurasi/post/'.$skd->id) ?>' class='col-6'>
                   <div class='input-group'>
                     <div class='input-group-prepend'>
                       <span class='input-group-text'>Passing Grade SKD</span>
