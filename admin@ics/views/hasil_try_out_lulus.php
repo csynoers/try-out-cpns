@@ -33,7 +33,6 @@
                   <th>Total Soal</th>
                   <th>Poin</th>
                   <th>Passing Grade</th>
-                  <th>Keterangan</th>
                   <th>Create At</th>
                   <th>Action</th>
                 </tr>
@@ -53,7 +52,6 @@
                         <td>{$value->total_questions} Soal</td>
                         <td>".( ($value->passing_grade*($value->total_questions*5))/100 )." poin dari total ".($value->total_questions*5)." poin</td>
                         <td>{$value->passing_grade}%</td>
-                        <td>{$value->keterangan}</td>
                         <td>{$value->create_at_mod}</td>
                         <td>
                             <a class='btn btn-primary form-edit' data-title='Detail Hasil Try Out CAT CPNS' data-href='{$value->href_edit}' href='javascript:void(0)'>Detail Hasil Try Out</a>
@@ -73,7 +71,6 @@
                     <th>Total Soal</th>
                     <th>Poin</th>
                     <th>Passing Grade</th>
-                    <th>Keterangan</th>
                     <th>Create At</th>
                     <th>Action</th>
                   </tr>

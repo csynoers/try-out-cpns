@@ -128,9 +128,15 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo base_url('admin/data-pelajaran')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'data-pelajaran') ? 'active' : null ; ?>">
+                <a href="<?php echo base_url('hasil/lulus')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'lulus') ? 'active' : null ; ?>">
                   <i class="fa fa-circle-o nav-icon"></i>
-                  <p>Tambah Soal</p>
+                  <p>Lulus Try Out</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo base_url('hasil/tidak-lulus')?>" class="nav-link <?php echo ($this->uri->segment(2) == 'tidak-lulus') ? 'active' : null ; ?>">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Tidak Lulus Try Out</p>
                 </a>
               </li>
             </ul>
