@@ -114,9 +114,19 @@ class Auth extends MY_Controller{
                     redirect( base_url('admin@ics') );
                 } else {
                     # code...level USER
-                    $row->nominal_transfer = 100000+rand ( 1 , 999 );
-                    $this->session->set_userdata([ "{$row->level}" => $row ]);
-                    redirect( base_url() );
+                    if ( $row->last_login ) {
+                        # update last login
+                        $this->M_auth->update_last_login( $row->username );
+                        $row  = $this->M_auth->check_already_exist()->row();
+    
+                        $row->nominal_transfer = 100000+rand ( 1 , 999 );
+                        $this->session->set_userdata([ "{$row->level}" => $row ]);
+                        redirect( base_url() );
+                    } else {
+                        $this->session->set_flashdata('msg', 'Maaf anda belum melakukan konfirmasi email, silahkan buka email kamu terlebih dahulu dan klik tautan konfirmasi email.');
+                        redirect( base_url('auth') );
+                    }
+                    
                 }
                 // if ( $row->level=='user' ) {
                 //     # code...level USER
@@ -266,8 +276,8 @@ class Auth extends MY_Controller{
 
         $mail->Host     = 'smtp.gmail.com'; //sesuaikan sesuai nama domain hosting/server yang digunakan
         $mail->SMTPAuth = true;
-        $mail->Username = '3s0c9m7@gmail.com'; // user email
-        $mail->Password = '@subandiyah'; // password email
+        $mail->Username = 'jogjasitesinur@gmail.com'; // user email
+        $mail->Password = 'Sinur12345'; // password email
         $mail->SMTPSecure = 'tls';
         $mail->Port     = 587; // GMail - 465/587/995/993
 

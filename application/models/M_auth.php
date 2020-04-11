@@ -93,4 +93,14 @@ class M_auth extends CI_Model{
 		$this->db->where($this->foreignKey,$this->username);
 		return $this->db->update($this->table, $data);
 	}
+	public function update_last_login( $username )
+	{
+		$this->username = $this->post['username'];
+		$this->last_login = date('Y-m-d H:i:s');
+		$data =  array(
+			'last_login' => $this->last_login,
+		);
+		$this->db->where($this->foreignKey,$this->username);
+		return $this->db->update($this->table, $data);
+	}
 }
