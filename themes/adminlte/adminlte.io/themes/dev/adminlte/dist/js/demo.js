@@ -28,7 +28,7 @@
   ]
 
   $container.append(
-    '<h5>Customize AdminLTE</h5><hr class="mb-2"/>'
+    '<h5>Customize Admin</h5><hr class="mb-2"/>'
     + '<h6>Navbar Variants</h6>'
   )
 
@@ -310,7 +310,8 @@ $(function () {
 
   var wrapper = $('<div />').css(wrapper_css)
   var link    = $('<a />', { href: 'https://themequarry.com' })
-    .html('Ready to sell your theme? Submit your theme to our new marketplace now and let over 200k visitors see it!')
+    .html('')
+    // .html('Ready to sell your theme? Submit your theme to our new marketplace now and let over 200k visitors see it!')
     .css(link_css)
     .hover(function () {
       $(this).css(link_hover_css)
