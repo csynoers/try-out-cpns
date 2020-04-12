@@ -289,6 +289,61 @@ class Ujian extends MY_Controller {
 			$this->M_exam_user_configs->post['total_payment'] = $this->session->userdata('user')->nominal_transfer;
 	
 			if ( $this->M_exam_user_configs->store() ) {
+				/* send to admin email */
+				$user_config = $this->M_exam_user_configs->get( $this->session->userdata('user')->username );
+				$html = "
+					<html>
+						<head>
+							<title>Try Out CPNS</title>
+						</head>
+						<body style='background: #eee;'>
+							<div style='padding: 50px;'>
+								<div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 15px 15px 0px 0px;'>
+									<h1>Try Out CAT CPNS</h1>
+								</div>
+								<div style='background: #fff;padding: 30px 30px;'>
+									<h2 style='margin-top: 0px'>Hi {$admin->fullname},</h2>
+									Silahkan melakukan pembayaran sesuai jumlah nominal dan bank transfer, dibawah ini untuk mendapatkan token :
+									<table style='width: 100%;border-spacing: unset;'>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>NIK </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->nik." </td>
+										</tr>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Nama Lengkap </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->fullname." </td>
+										</tr>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Username </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->username." </td>
+										</tr>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Email </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'> <a href='mailto:".$this->session->userdata('user')->email."' target='_blank'>".$this->session->userdata('user')->email."</a> </td>
+										</tr>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Telepon </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->session->userdata('user')->telp." </td>
+										</tr>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Bank Transfer </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'> ".$this->input->post('bank')." </td>
+										</tr>
+										<tr>
+											<td width='25%' style='padding: 10px 10px;border: 1px solid #ddd;'>Nominal Transfer </td>
+											<td style='padding: 10px 10px;border: 1px solid #ddd;'>Rp. ".rupiah($this->session->userdata('user')->nominal_transfer)." </td>
+										</tr>
+									</table>
+								</div>
+								<div style='background:#007bff;padding: 1px 0px;text-align: center;color: white;border-radius: 0px 0px 15px 15px;'>
+									<p><a href='".base_url()."' target='_blank' style='color: wheat;font-weight: bold;'>Try Out CAT CPNS Bimbel IC Surabaya © ".date('Y')."</a><br> Pusat Operasional : Jl. Mulyosari Mas C3 No 19 Surabaya</p>
+								</div>
+							</div>
+						</body>
+					</html>	
+				";
+				$this->send_email_smtp('Tagihan pembayaran aktivasi token',$this->session->userdata('user')->email,$html);
+
 				$this->msg= [
 					'stats'=> 1,
 					'msg'=> 'Permintaan token berhasil dikirim silahkan buka email anda dan lakukan pembayaran sesuai dengan nominal yang tertera, jika tidak masuk di menu Inbox(kotak masuk) silahkan cek di menu Spam, Terimakasih',
